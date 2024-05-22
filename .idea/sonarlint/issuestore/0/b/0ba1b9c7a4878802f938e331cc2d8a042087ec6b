@@ -1,2 +1,15 @@
 
-m	java:S106"+Replace this use of System.out by a logger.(›ß8´ª–êù1J$ebfce30c-b9d6-47bf-b069-f83fa11187a7
+_
+java:S6208B"CMerge the previous cases into this one using comma-separated label.(û¿48›š’ú1
+G	java:S106"+Replace this use of System.out by a logger.(›ß8•›š’ú1
+G	java:S106"+Replace this use of System.out by a logger.(Îñë8—›š’ú1
+E
+java:S5665"(Remove this unnecessary escape sequence.(£æ†¡8˜›š’ú1
+G	java:S106&"+Replace this use of System.out by a logger.(éÿƒ‡8™›š’ú1
+]	java:S125("<This block of commented-out lines of code should be removed.(ë×ä¸üÿÿÿÿ8™›š’ú1
+G	java:S106+"+Replace this use of System.out by a logger.(ª÷Íè8™›š’ú1
+X	java:S1257"<This block of commented-out lines of code should be removed.(÷‡ÆÓ8š›š’ú1
+X	java:S125:"<This block of commented-out lines of code should be removed.(˜‹Ê”8š›š’ú1
+]	java:S125="<This block of commented-out lines of code should be removed.(óŞÒÎùÿÿÿÿ8š›š’ú1
+]	java:S125@"<This block of commented-out lines of code should be removed.(ííè®ÿÿÿÿÿ8š›š’ú1
+L	java:S106I"+Replace this use of System.out by a logger.(‚“Ëøÿÿÿÿ8š›š’ú1

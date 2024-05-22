@@ -1,8 +1,14 @@
 
-G	java:S106"+Replace this use of System.err by a logger.(üÖÿ‚8°ÅÒİù1
-G	java:S106!"+Replace this use of System.out by a logger.(éğ«—8²ÅÒİù1
-]	java:S125""<This block of commented-out lines of code should be removed.(õ»–ÿÿÿÿÿ8²ÅÒİù1
-L	java:S106."+Replace this use of System.out by a logger.(Úå“·üÿÿÿÿ8³ÅÒİù1
-L	java:S1066"+Replace this use of System.out by a logger.(¼¹‹Úüÿÿÿÿ8´ÅÒİù1
-L	java:S1068"+Replace this use of System.err by a logger.(¥‚ëµûÿÿÿÿ8µÅÒİù1
-]	java:S125<"<This block of commented-out lines of code should be removed.(¯ŞğØıÿÿÿÿ8µÅÒİù1
+m	java:S106"+Replace this use of System.err by a logger.(üÖÿ‚8Ú½°‘ú1J$c90c230b-57e3-416a-aa6c-867facea51c5
+m	java:S106#"+Replace this use of System.out by a logger.(éğ«—8Ü½°‘ú1J$c2f220ce-e4e4-46c0-9186-5e2b5b0c86af
+r	java:S1060"+Replace this use of System.out by a logger.(Úå“·üÿÿÿÿ8İ½°‘ú1J$20e7df19-1ac7-46d3-a168-12b176c2f0a2
+r	java:S1068"+Replace this use of System.out by a logger.(¼¹‹Úüÿÿÿÿ8Ş½°‘ú1J$84961f0f-9fdb-4b91-bcaa-2403be2cab8c
+r	java:S106:"+Replace this use of System.err by a logger.(¥‚ëµûÿÿÿÿ8Ş½°‘ú1J$7d044f2d-3b4a-47ae-b9bc-075f6942d9f4
+r	java:S106J"+Replace this use of System.err by a logger.(Š¤Ã†øÿÿÿÿ8à½°‘ú1J$c1b788f8-fa80-44d1-9afa-7b63a19c18cb
+u
+java:S1172P"-Remove this unused method parameter "socket".(Àâ¡±úÿÿÿÿ8á½°‘ú1J$fb184aca-0847-4271-9f13-8d7cfcc5c058
+r	java:S106V"+Replace this use of System.out by a logger.(­˜Äúÿÿÿÿ8á½°‘ú1J$d9aabc30-fc21-426f-a6d4-2a449172708d
+^
+java:S1117]"<Rename "endereco" which hides the field declared at line 12.(°Ë›ıÿÿÿÿ8ö¬²‘ú1
+[
+java:S1117^"9Rename "porta" which hides the field declared at line 13.(µÓùÉÿÿÿÿÿ8ö¬²‘ú1

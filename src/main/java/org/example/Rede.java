@@ -14,9 +14,11 @@ import java.util.Scanner;
 @Getter
 public class Rede {
     private Map<String, No> nosDaRede;
+    private int ttlPadrao;
 
     public Rede(){
         this.nosDaRede = new HashMap<>();
+        this.ttlPadrao = 100;
     }
 
     public No criarOuObterNo(String endereco, int porta){
@@ -79,7 +81,7 @@ public class Rede {
         }
     }
 
-    public void obterNosDoUsuario(Rede rede){
+    public void criarNo(Rede rede){
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Digite o: 'endereco:porta + {nome do arquivo de vizinhos} + {nome do arquivo de chaves-valor}': ");
@@ -97,5 +99,9 @@ public class Rede {
         String caminhoChaveValor = partes.length > 2 ? partes[2] : null;
 
         rede.inicializarNo(enderecoPorta, caminhoVizinhos, caminhoChaveValor);
+    }
+
+    public No buscarNo(String enderecoPorta){
+        return nosDaRede.get(enderecoPorta);
     }
 }
