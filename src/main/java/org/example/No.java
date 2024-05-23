@@ -11,7 +11,7 @@ import java.net.*;
 public class No {
     private String endereco;
     private int porta;
-    private List<No> vizinhos;
+    private List<String> vizinhos;
     private Map<String, String> chaveValor;
     private ServerSocket serverSocketEscuta;
     private int numeroSequenciaMsg;
@@ -40,29 +40,21 @@ public class No {
         return chaveValor.get(chave);
     }
 
-    public void adicionarVizinho(No vizinho) {
-        System.out.println("Tentando adicionar vizinho: " + vizinho.getEndereco() + ":" + vizinho.getPorta());
+    public void adicionarVizinho(String enderecoPortaVizinho) {
+        System.out.println("Tentando adicionar vizinho: " + enderecoPortaVizinho);
 
-        try (Socket socket = new Socket(vizinho.getEndereco(), vizinho.getPorta())) {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println("HELLO");
-
-            this.vizinhos.add(vizinho);
-
-            System.out.println("Vizinho adicionado com sucesso: "  + vizinho.getEndereco() + ":" + vizinho.getPorta());
-        } catch (IOException e) {
-            System.err.println("Erro ao adicionar vizinho: " + e.getMessage());
-        }
+        if (!vizinhos.contains(enderecoPortaVizinho))
+            vizinhos.add(enderecoPortaVizinho);
     }
 
     public void listarVizinhos(){
-        long numeroDeVizinhos = 0;
-        numeroDeVizinhos = vizinhos.size();
+        long numeroDeVizinhos = vizinhos.size();
         System.out.println("Ha " + numeroDeVizinhos + " vizinhos na tabela:");
 
-        for (int i = 0; i < numeroDeVizinhos; i++) {
-            No vizinho = vizinhos.get(i);
-            System.out.println("[" + i + "] " + vizinho.getEndereco() + ":" + vizinho.getPorta());
+        if (numeroDeVizinhos > 0) {
+            for (int i = 0; i < numeroDeVizinhos; i++) {
+                System.out.println("[" + i + "] " + vizinhos.get(i));
+            }
         }
     }
 
@@ -90,25 +82,25 @@ public class No {
     }
 
     /* Métodos envio de mensagens */
-    public void enviarHello(Rede rede) {
+    public void enviarHello() {
         System.out.println("Escolha o vizinho:");
         listarVizinhos();
         Scanner scanner = new Scanner(System.in);
         int indexNoDestino = scanner.nextInt();
-        No noDestino = vizinhos.get(indexNoDestino);
+        String enderecoPortaDestino = vizinhos.get(indexNoDestino);
+        No noDestino = rede.getNosDaRede().get(enderecoPortaDestino);
+        // TO-DO: falta lista de argumentos
 
         String origem = endereco + ":" + porta;
         int ttl = rede.getTtlPadrao();
         String operacao = "HELLO";
         String mensagem = String.format("%s %d %d %s", origem, numeroSequenciaMsg, ttl, operacao);
 
-        System.out.println("Encaminhando mensagem " + "'" + mensagem + "' " + "para " + noDestino.getPorta());
+        System.out.println("Encaminhando mensagem " + "'" + mensagem + "' " + "para " + noDestino.getEndereco() + ":" + noDestino.getPorta());
+
         try (Socket socket = criarSocket(noDestino.getEndereco(), noDestino.getPorta())) {
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(mensagem);
-
-            System.out.println("Envio feito com sucesso: " + mensagem);
-            numeroSequenciaMsg++;
         } catch (IOException e) {
             System.err.println("Erro ao enviar mensagem HELLO: " + mensagem);
         }
@@ -119,20 +111,19 @@ public class No {
         List<String> partesMensagem = Arrays.asList(mensagem.split(" "));
 
         if (partesMensagem.contains("HELLO")) {
-            receberHello(partesMensagem);
+            receberHello(partesMensagem.get(0));
+        }
+
+        if(partesMensagem.contains("HELLO_OK")) {
+            System.out.println("Envio feito com sucesso: " + "Hello");
+            numeroSequenciaMsg++;
         }
     }
 
-    public void receberHello(List<String> partesMensagem) {
-        if(partesMensagem.size() >= 2) {
-            String noOrigem = partesMensagem.get(0);
-            String[] enderecoPorta = noOrigem.split(":");
-            String endereco = enderecoPorta[0];
-            int porta = Integer.parseInt(enderecoPorta[1]);
-
-            No transmissor = new No(endereco, porta, rede);
-            adicionarVizinho(transmissor);
-        }
+    public void receberHello(String enderecoPortaOrigem) {
+                if(!vizinhos.contains(enderecoPortaOrigem)) {
+                    vizinhos.add(enderecoPortaOrigem);
+                    System.out.println("Adicionando vizinho na tabela: " + enderecoPortaOrigem);
+                }
     }
-
 }

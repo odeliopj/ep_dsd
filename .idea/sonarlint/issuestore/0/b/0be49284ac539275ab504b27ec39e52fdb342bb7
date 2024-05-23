@@ -1,7 +1,9 @@
 
-m	java:S106"+Replace this use of System.out by a logger.(Âõ²ý8í¶†­ú1J$b38d2edc-6528-4cab-9fb5-1ebd7ae35aef
-m	java:S106%"+Replace this use of System.err by a logger.(¤Ó‘‡8í¶†­ú1J$76e7db78-9e8a-42d3-9c6f-6ea557c87331
-m	java:S106;"+Replace this use of System.out by a logger.(ü†¶°8¼ù»­ú1J$6c062c74-5d15-4534-aecd-ee581fce48d0
-r	java:S106<"+Replace this use of System.out by a logger.(¼ÅÎ½üÿÿÿÿ8¼ù»­ú1J$cc9c95a3-13dc-46fb-91c6-cfacbbec9f34
-F	java:S106V"+Replace this use of System.err by a logger.(€¥½8“Ëô­ú1
-L	java:S106d"+Replace this use of System.err by a logger.(ß‚›êÿÿÿÿÿ8”Ëô­ú1
+P
+java:S1128"3Remove this unused import 'java.io.BufferedReader'.(€é²Å8ƒÁÈ¯ú1
+Q
+java:S1128"/Remove this unused import 'java.io.FileReader'.(Â¡¢äþÿÿÿÿ8…ÁÈ¯ú1
+R
+java:S1128"0Remove this unused import 'java.io.IOException'.(ªº»Úýÿÿÿÿ8…ÁÈ¯ú1
+P
+java:S1128".Remove this unused import 'java.util.Scanner'.(ÒÜÅ¸úÿÿÿÿ8…ÁÈ¯ú1

@@ -1,15 +1,15 @@
 
-…
-java:S6208C"CMerge the previous cases into this one using comma-separated label.(û¿48µ‰®ú1J$93433625-c766-4f18-a97c-689acc00d5fc
-m	java:S106"+Replace this use of System.out by a logger.(›ß8¹‰®ú1J$58003df7-3ee4-4d7b-98df-0c3b3b5edcbc
-m	java:S106"+Replace this use of System.out by a logger.(Îñë8¹‰®ú1J$8ba0f338-f914-404e-96c6-0675e92ae7b3
-k
-java:S5665"(Remove this unnecessary escape sequence.(£æ†¡8º‰®ú1J$a638d773-fc0b-4f88-a362-4efdd4358465
-m	java:S106&"+Replace this use of System.out by a logger.(éÿƒ‡8º‰®ú1J$9daa4b29-7abc-4353-9e2d-81a0724f4634
-m	java:S106+"+Replace this use of System.out by a logger.(ôêÉ8º‰®ú1J$5f062e62-5648-4b1a-9bd4-46aede42a6ad
-ƒ	java:S1258"<This block of commented-out lines of code should be removed.(Î™ÿšøÿÿÿÿ8»‰®ú1J$fa6ca1ac-aa68-4d93-85aa-e625102874e5
-ƒ	java:S125;"<This block of commented-out lines of code should be removed.(ÖÈ÷şÿÿÿÿ8»‰®ú1J$7428f87d-89c2-4c7d-81b1-f5d18df284de
-ƒ	java:S125>"<This block of commented-out lines of code should be removed.(îÅŞÛşÿÿÿÿ8»‰®ú1J$b00252e2-e80a-4298-9a5c-1bf224ed70e4
-ƒ	java:S125A"<This block of commented-out lines of code should be removed.(€ÒÂ¨ıÿÿÿÿ8»‰®ú1J$afb0ae1a-7459-4639-bffd-64427ee617e1
-l	java:S106G"+Replace this use of System.out by a logger.(«œ‡P8»‰®ú1J$faa3236b-484e-43ac-bbc0-1775cfca6005
-r	java:S106K"+Replace this use of System.out by a logger.(‚“Ëøÿÿÿÿ8ÒÏ®ú1J$0c61afc6-5ee4-40f3-8b4a-8014fa191469
+_
+java:S6208C"CMerge the previous cases into this one using comma-separated label.(û¿48Şòç®ú1
+G	java:S106"+Replace this use of System.out by a logger.(›ß8ãòç®ú1
+G	java:S106"+Replace this use of System.out by a logger.(Îñë8ãòç®ú1
+E
+java:S5665"(Remove this unnecessary escape sequence.(£æ†¡8äòç®ú1
+G	java:S106&"+Replace this use of System.out by a logger.(éÿƒ‡8äòç®ú1
+G	java:S106+"+Replace this use of System.out by a logger.(ôêÉ8åòç®ú1
+]	java:S1258"<This block of commented-out lines of code should be removed.(Î™ÿšøÿÿÿÿ8åòç®ú1
+]	java:S125;"<This block of commented-out lines of code should be removed.(ÖÈ÷şÿÿÿÿ8åòç®ú1
+]	java:S125>"<This block of commented-out lines of code should be removed.(îÅŞÛşÿÿÿÿ8æòç®ú1
+]	java:S125A"<This block of commented-out lines of code should be removed.(€ÒÂ¨ıÿÿÿÿ8æòç®ú1
+F	java:S106G"+Replace this use of System.out by a logger.(«œ‡P8æòç®ú1
+L	java:S106K"+Replace this use of System.out by a logger.(‚“Ëøÿÿÿÿ8æòç®ú1
