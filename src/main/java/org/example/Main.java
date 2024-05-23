@@ -7,8 +7,8 @@ public class Main {
         Rede rede = new Rede();
         int quantidadeNos = 0;
         int comandoEscolhido = -1;
+        No noEscolhidoOrigem = null;
         boolean sairPrograma = false;
-        No noEscolhido = null;
         String enderecoPortaNoEscolhido = null;
         Scanner scanner = new Scanner(System.in);
 
@@ -37,36 +37,38 @@ public class Main {
              """);
             System.out.print("Digite o comando: ");
             comandoEscolhido = scanner.nextInt();
-            //scanner.nextLine();
 
-            scanner = new Scanner(System.in);
-            System.out.print("Qual no sera utilizado para os comandos (digite 'endereco:porta'): ");
-            enderecoPortaNoEscolhido = scanner.nextLine();
-            noEscolhido = rede.buscarNo(enderecoPortaNoEscolhido);
+            if (comandoEscolhido != 9) {
+                scanner = new Scanner(System.in);
+                System.out.print("Qual no sera utilizado para executar os comandos (digite 'endereco:porta'): ");
+                enderecoPortaNoEscolhido = scanner.nextLine();
+                noEscolhidoOrigem = rede.buscarNo(enderecoPortaNoEscolhido);
+            }
 
             switch(comandoEscolhido){
                 case 0:
-                    ServicoComandos.listarVizinhos(noEscolhido);
+                    noEscolhidoOrigem.listarVizinhos();
                     break;
                 case 1:
-                    ServicoComandos.enviarHello(noEscolhido);
+                    noEscolhidoOrigem.enviarHello(rede);
                     break;
                 case 2:
-//                    ServicoComandos.enviarSearchFlooding(noEscolhido);
+//                    ServicoComandos.enviarSearchFlooding(noEscolhidoOrigem);
 //                    break;
                 case 3:
-//                    ServicoComandos.enviarSearchRandomWalk(noEscolhido);
+//                    ServicoComandos.enviarSearchRandomWalk(noEscolhidoOrigem);
 //                    break;
                 case 4:
-//                    ServicoComandos.enviarSearchBuscaEmProfundidade(noEscolhido);
+//                    ServicoComandos.enviarSearchBuscaEmProfundidade(noEscolhidoOrigem);
 //                    break;
                 case 5:
-//                    ServicoComandos.exibirEstatisticas(noEscolhido);
+//                    ServicoComandos.exibirEstatisticas(noEscolhidoOrigem);
 //                    break;
                 case 6:
                     ServicoComandos.alterarValorPadraoTTL(rede);
                     break;
                 case 9:
+                    System.out.println("Programa encerrado");
                     sairPrograma = true;
                     break;
                 default:

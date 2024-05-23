@@ -1,9 +1,7 @@
 
-‹
-java:S3824"HReplace this "Map.containsKey()" with a call to "Map.computeIfAbsent()".(İ›Ã›8€âàú1J$866780bc-ae01-40f9-8a18-39728f87e1b8
-m	java:S1062"+Replace this use of System.out by a logger.(ü†¶°8†âàú1J$fc591b10-340a-4b7b-84f0-4e86b0b428b7
-r	java:S1063"+Replace this use of System.out by a logger.(¼ÅÎ½üÿÿÿÿ8†âàú1J$e14b1852-d0e4-4afa-b1e3-df2120dca141
-l	java:S106B"+Replace this use of System.err by a logger.(€¥½8‰âàú1J$690ef9cf-84d8-4e47-a53f-940ca521d6fc
-r	java:S106P"+Replace this use of System.err by a logger.(ß‚›êÿÿÿÿÿ8Šâàú1J$88da9330-d2a5-445c-b150-4fad8fcf57e0
-m	java:S106W"+Replace this use of System.out by a logger.(Âõ²ı8Œâàú1J$c9ba61b9-aaa6-4617-9523-c551be4cebc8
-m	java:S106]"+Replace this use of System.err by a logger.(¤Ó‘‡8âàú1J$12575659-82e6-4ca0-a1d7-a0a2fe905bbd
+m	java:S106"+Replace this use of System.out by a logger.(Âõ²ı8í¶†­ú1J$b38d2edc-6528-4cab-9fb5-1ebd7ae35aef
+m	java:S106%"+Replace this use of System.err by a logger.(¤Ó‘‡8í¶†­ú1J$76e7db78-9e8a-42d3-9c6f-6ea557c87331
+m	java:S106;"+Replace this use of System.out by a logger.(ü†¶°8¼ù»­ú1J$6c062c74-5d15-4534-aecd-ee581fce48d0
+r	java:S106<"+Replace this use of System.out by a logger.(¼ÅÎ½üÿÿÿÿ8¼ù»­ú1J$cc9c95a3-13dc-46fb-91c6-cfacbbec9f34
+F	java:S106V"+Replace this use of System.err by a logger.(€¥½8“Ëô­ú1
+L	java:S106d"+Replace this use of System.err by a logger.(ß‚›êÿÿÿÿÿ8”Ëô­ú1

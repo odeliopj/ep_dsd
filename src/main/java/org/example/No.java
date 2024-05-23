@@ -13,27 +13,23 @@ public class No {
     private int porta;
     private List<No> vizinhos;
     private Map<String, String> chaveValor;
-    private ServerSocket serverSocket;
+    private ServerSocket serverSocketEscuta;
     private int numeroSequenciaMsg;
+    private Rede rede;
 
-    public No(String endereco, int porta) {
+    public No(String endereco, int porta, Rede rede) {
         this.endereco = endereco;
         this.porta = porta;
         this.vizinhos = new ArrayList<>();
         this.chaveValor = new HashMap<>();
-        this.numeroSequenciaMsg = 0;
+        this.numeroSequenciaMsg = 1;
+        this.rede = rede;
         try {
-            this.serverSocket = new ServerSocket(porta, 50, InetAddress.getByName(endereco));
+            this.serverSocketEscuta = new ServerSocket(porta, 50, InetAddress.getByName(endereco));
+            escutarConexoes();
         } catch (IOException e) {
             System.err.println("Erro ao criar o socket: " + e.getMessage());
         }
-    }
-
-    public void criarSocket() throws IOException {
-        serverSocket = new ServerSocket();
-        serverSocket.bind(new InetSocketAddress(endereco, porta));
-        System.out.println("Nó " + endereco + ":" + porta + " iniciado em " + endereco + ":" + porta);
-        escutarConexoes();
     }
 
     public void adicionarChaveValor(String chave, String valor) {
@@ -59,16 +55,32 @@ public class No {
         }
     }
 
+    public void listarVizinhos(){
+        long numeroDeVizinhos = 0;
+        numeroDeVizinhos = vizinhos.size();
+        System.out.println("Ha " + numeroDeVizinhos + " vizinhos na tabela:");
+
+        for (int i = 0; i < numeroDeVizinhos; i++) {
+            No vizinho = vizinhos.get(i);
+            System.out.println("[" + i + "] " + vizinho.getEndereco() + ":" + vizinho.getPorta());
+        }
+    }
+
+    /* Métodos criação sockets */
+    public Socket criarSocket(String enderecoDestino, int portaDestino) throws IOException {
+        return new Socket(enderecoDestino, portaDestino);
+    }
+
     private void escutarConexoes() {
         new Thread(() -> {
             while (true) {
                 try {
-                    Socket socket = serverSocket.accept();
+                    Socket socket = serverSocketEscuta.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     String mensagem = in.readLine();
 
                     if (mensagem != null) {
-                        tratarMensagem(socket, mensagem);
+                        tratarMensagem(mensagem);
                     }
                 } catch (IOException e) {
                     System.err.println("Erro ao aceitar conexão: " + e.getMessage());
@@ -77,22 +89,50 @@ public class No {
         }).start();
     }
 
-    private void tratarMensagem(Socket socket, String mensagem) {
-        String[] partes = mensagem.split(" ");
-        String tipoMensagem = partes[0];
+    /* Métodos envio de mensagens */
+    public void enviarHello(Rede rede) {
+        System.out.println("Escolha o vizinho:");
+        listarVizinhos();
+        Scanner scanner = new Scanner(System.in);
+        int indexNoDestino = scanner.nextInt();
+        No noDestino = vizinhos.get(indexNoDestino);
 
-        if ("HELLO".equals(tipoMensagem)) {
-            String origin = partes[1];
-            System.out.println("Mensagem HELLO recebida de " + origin);
-            receberHello(origin);
+        String origem = endereco + ":" + porta;
+        int ttl = rede.getTtlPadrao();
+        String operacao = "HELLO";
+        String mensagem = String.format("%s %d %d %s", origem, numeroSequenciaMsg, ttl, operacao);
+
+        System.out.println("Encaminhando mensagem " + "'" + mensagem + "' " + "para " + noDestino.getPorta());
+        try (Socket socket = criarSocket(noDestino.getEndereco(), noDestino.getPorta())) {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println(mensagem);
+
+            System.out.println("Envio feito com sucesso: " + mensagem);
+            numeroSequenciaMsg++;
+        } catch (IOException e) {
+            System.err.println("Erro ao enviar mensagem HELLO: " + mensagem);
         }
     }
 
-    public void receberHello(String origin) {
-        String[] parts = origin.split(":");
-        String endereco = parts[0];
-        int porta = Integer.parseInt(parts[1]);
-        No transmissor = new No(endereco, porta);
-        adicionarVizinho(transmissor);
+    /* Métodos de tratamento de mensagens recebidas */
+    private void tratarMensagem(String mensagem) {
+        List<String> partesMensagem = Arrays.asList(mensagem.split(" "));
+
+        if (partesMensagem.contains("HELLO")) {
+            receberHello(partesMensagem);
+        }
     }
+
+    public void receberHello(List<String> partesMensagem) {
+        if(partesMensagem.size() >= 2) {
+            String noOrigem = partesMensagem.get(0);
+            String[] enderecoPorta = noOrigem.split(":");
+            String endereco = enderecoPorta[0];
+            int porta = Integer.parseInt(enderecoPorta[1]);
+
+            No transmissor = new No(endereco, porta, rede);
+            adicionarVizinho(transmissor);
+        }
+    }
+
 }

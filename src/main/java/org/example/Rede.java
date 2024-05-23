@@ -21,26 +21,35 @@ public class Rede {
         this.ttlPadrao = 100;
     }
 
-    public No criarOuObterNo(String endereco, int porta){
-        String chave = endereco + ":" + porta;
-
-        if (!nosDaRede.containsKey(chave)){
-            No novoNo = new No(endereco, porta);
-            nosDaRede.put(chave, novoNo);
-        }
-
-        return nosDaRede.get(chave);
+    public No buscarNo(String enderecoPorta){
+        return nosDaRede.get(enderecoPorta);
     }
 
-    public void inicializarNo(String enderecoPorta, String caminhoVizinhos, String caminhoChaveValor){
-        String[] partes = enderecoPorta.split(":");
-        String endereco = partes[0];
-        int porta = Integer.parseInt(partes[1]);
+    public void criarNo(Rede rede){
+        Scanner scanner = new Scanner(System.in);
 
-        No no = criarOuObterNo(endereco, porta);
+        System.out.print("Digite o: 'endereco:porta + {nome do arquivo de vizinhos} + {nome do arquivo de chaves-valor}': ");
+        String dadosNo = scanner.nextLine();
+
+        String[] partesDadosNo = dadosNo.split(" ");
+
+        if (partesDadosNo.length < 1 || partesDadosNo.length > 3) {
+            System.err.println("Entrada inválida. Certifique-se de que a entrada contém entre uma e três partes separadas por espaço.");
+            return;
+        }
+
+        String enderecoPorta = partesDadosNo[0];
+        String caminhoVizinhos = partesDadosNo.length > 1 ? partesDadosNo[1] : null;
+        String caminhoChaveValor = partesDadosNo.length > 2 ? partesDadosNo[2] : null;
+
+        String[] partesEnderecoPorta = enderecoPorta.split(":");
+        String endereco = partesEnderecoPorta[0];
+        int porta = Integer.parseInt(partesEnderecoPorta[1]);
+
+        No no = verificarNoExiste(endereco, porta, rede);
 
         if (caminhoVizinhos != null) {
-            lerArquivoVizinhos(no, caminhoVizinhos);
+            lerArquivoVizinhos(no, caminhoVizinhos, rede);
         }
 
         if (caminhoChaveValor != null) {
@@ -51,7 +60,18 @@ public class Rede {
         System.out.println(no);
     }
 
-    private void lerArquivoVizinhos(No no, String caminhoVizinhos) {
+    public No verificarNoExiste(String endereco, int porta, Rede rede){
+        String chave = endereco + ":" + porta;
+
+        if (!nosDaRede.containsKey(chave)){
+            No novoNo = new No(endereco, porta, rede);
+            nosDaRede.put(chave, novoNo);
+        }
+
+        return nosDaRede.get(chave);
+    }
+
+    private void lerArquivoVizinhos(No no, String caminhoVizinhos, Rede rede) {
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoVizinhos))) {
             String linha;
             while ((linha = br.readLine()) != null) {
@@ -59,7 +79,7 @@ public class Rede {
                 String vizinhoEndereco = vizinhoEnderecoPorta[0];
                 int vizinhoPorta = Integer.parseInt(vizinhoEnderecoPorta[1]);
 
-                No noVizinho = criarOuObterNo(vizinhoEndereco, vizinhoPorta);
+                No noVizinho = verificarNoExiste(vizinhoEndereco, vizinhoPorta, rede);
                 no.adicionarVizinho(noVizinho);
             }
         } catch (IOException e) {
@@ -79,29 +99,5 @@ public class Rede {
         } catch (IOException e) {
             System.err.println("Erro ao ler arquivo de pares chave-valor: " + e.getMessage());
         }
-    }
-
-    public void criarNo(Rede rede){
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Digite o: 'endereco:porta + {nome do arquivo de vizinhos} + {nome do arquivo de chaves-valor}': ");
-        String dadosNo = scanner.nextLine();
-
-        String[] partes = dadosNo.split(" ");
-
-        if (partes.length < 1 || partes.length > 3) {
-            System.err.println("Entrada inválida. Certifique-se de que a entrada contém entre uma e três partes separadas por espaço.");
-            return;
-        }
-
-        String enderecoPorta = partes[0];
-        String caminhoVizinhos = partes.length > 1 ? partes[1] : null;
-        String caminhoChaveValor = partes.length > 2 ? partes[2] : null;
-
-        rede.inicializarNo(enderecoPorta, caminhoVizinhos, caminhoChaveValor);
-    }
-
-    public No buscarNo(String enderecoPorta){
-        return nosDaRede.get(enderecoPorta);
     }
 }

@@ -1,14 +1,18 @@
 
-m	java:S106"+Replace this use of System.err by a logger.(üÖÿ‚8Ú½°‘ú1J$c90c230b-57e3-416a-aa6c-867facea51c5
-m	java:S106#"+Replace this use of System.out by a logger.(éð«—8Ü½°‘ú1J$c2f220ce-e4e4-46c0-9186-5e2b5b0c86af
-r	java:S1060"+Replace this use of System.out by a logger.(Úå“·üÿÿÿÿ8Ý½°‘ú1J$20e7df19-1ac7-46d3-a168-12b176c2f0a2
-r	java:S1068"+Replace this use of System.out by a logger.(¼¹‹Úüÿÿÿÿ8Þ½°‘ú1J$84961f0f-9fdb-4b91-bcaa-2403be2cab8c
-r	java:S106:"+Replace this use of System.err by a logger.(¥‚ëµûÿÿÿÿ8Þ½°‘ú1J$7d044f2d-3b4a-47ae-b9bc-075f6942d9f4
-r	java:S106J"+Replace this use of System.err by a logger.(Š¤Ã†øÿÿÿÿ8à½°‘ú1J$c1b788f8-fa80-44d1-9afa-7b63a19c18cb
-u
-java:S1172P"-Remove this unused method parameter "socket".(Àâ¡±úÿÿÿÿ8á½°‘ú1J$fb184aca-0847-4271-9f13-8d7cfcc5c058
-r	java:S106V"+Replace this use of System.out by a logger.(­˜ÄŽúÿÿÿÿ8á½°‘ú1J$d9aabc30-fc21-426f-a6d4-2a449172708d
-^
-java:S1117]"<Rename "endereco" which hides the field declared at line 12.(°Ë›ýÿÿÿÿ8ö¬²‘ú1
-[
-java:S1117^"9Rename "porta" which hides the field declared at line 13.(µÓùÉÿÿÿÿÿ8ö¬²‘ú1
+‰
+java:S11920"FDefine a constant instead of duplicating this literal "HELLO" 3 times.(ôÕ±ª8œÖ†®ú1J$6a66592c-cb3d-4a26-90de-5113c656e591
+m	java:S106"+Replace this use of System.err by a logger.(üÖÿ‚8£Ö†®ú1J$bd21f2eb-2d56-49f7-b00a-e1d8ba3c4305
+r	java:S106,"+Replace this use of System.out by a logger.(Úå“·üÿÿÿÿ8¤Ö†®ú1J$05b49de4-e5a7-40c5-ac6a-55f3edad7ed9
+r	java:S1064"+Replace this use of System.out by a logger.(¼¹‹Úüÿÿÿÿ8¥Ö†®ú1J$1ca52151-9968-45b2-b932-e882a564831a
+r	java:S1066"+Replace this use of System.err by a logger.(¥‚ëµûÿÿÿÿ8¥Ö†®ú1J$efd5253a-0cba-4d40-82d2-c3d0b1983129
+r	java:S106="+Replace this use of System.out by a logger.(ÑÑåÜüÿÿÿÿ8¥Ö†®ú1J$53b6b1e7-7ad6-45e2-a32d-ae25ad3799fd
+r	java:S106A"+Replace this use of System.out by a logger.(óØÆûùÿÿÿÿ8¦Ö†®ú1J$60056c3a-f2b0-4675-99b3-b1e83d7ad515
+r	java:S106V"+Replace this use of System.err by a logger.(Š¤Ã†øÿÿÿÿ8§Ö†®ú1J$c7401be3-cbb8-4453-a957-462bd44aa82d
+r	java:S106^"+Replace this use of System.out by a logger.(¸™Æˆþÿÿÿÿ8¨Ö†®ú1J$7f1b9298-f16b-44e4-9ca7-18ef984cf201
+r	java:S106i"+Replace this use of System.out by a logger.(‚×‚‹ûÿÿÿÿ8©Ö†®ú1J$6ee60c5f-321f-4f8d-8c67-5693211bc962
+r	java:S106n"+Replace this use of System.out by a logger.(Ò´¥èþÿÿÿÿ8©Ö†®ú1J$bfbd6a43-a0f1-4efe-8a9c-7b5e91135c02
+m	java:S106q"+Replace this use of System.err by a logger.(ÉðõÈ8©Ö†®ú1J$03fd1b97-d663-4f38-b972-78e12eb2de97
+…
+java:S1117‚"<Rename "endereco" which hides the field declared at line 12.(†ÔÒöÿÿÿÿÿ8«Ö†®ú1J$25a57191-71e3-435d-bac5-998f30ca75b6
+‚
+java:S1117ƒ"9Rename "porta" which hides the field declared at line 13.(åäŽ™ÿÿÿÿÿ8«Ö†®ú1J$03b1fc23-3384-4f3c-bbbf-9a56600a2fbd
