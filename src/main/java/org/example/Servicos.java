@@ -63,6 +63,24 @@ public final class Servicos {
         }
     }
 
+    public static void criarNosRede(Rede rede) {
+        int quantidadeNos = 0;
+        Scanner scanner = new Scanner(System.in);
+
+        while(quantidadeNos <= 0) {
+            System.out.print("Digite o número de nós que a rede terá: ");
+            quantidadeNos = scanner.nextInt();
+        }
+
+        for (int i = 0; i < quantidadeNos; i++) {
+            Scanner scannerNos = new Scanner(System.in);
+            System.out.print("[" + i + "] " + "Digite o: 'endereco:porta + {nome do arquivo de vizinhos} + {nome do arquivo de chaves-valor}': ");
+            String dadosNovoNo = scannerNos.nextLine();
+
+            Servicos.criarNo(dadosNovoNo, rede);
+        }
+    }
+
     public static void menuComandos(Rede rede) {
         boolean executarMenu = true;
         int comandoEscolhido = -1;
