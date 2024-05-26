@@ -4,7 +4,9 @@ public class Main {
     public static void main(String[] args) {
         Rede rede = new Rede();
 
-        Servicos.criarNosRede(rede);
+        //Servicos.criarNosRede(rede);
+
+        Servicos.arquivosDeTeste(rede);
 
         Servicos.menuComandos(rede);
     }

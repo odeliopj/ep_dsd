@@ -54,9 +54,11 @@ public final class Servicos {
             String linha;
             while ((linha = br.readLine()) != null) {
                 String[] chaveValor = linha.split(" ");
-                String chave = chaveValor[0];
-                String valor = chaveValor[1];
-                no.adicionarChaveValor(chave, valor);
+                if(chaveValor.length == 2) {
+                    String chave = chaveValor[0];
+                    String valor = chaveValor[1];
+                    no.adicionarChaveValor(chave, valor);
+                }
             }
         } catch (IOException e) {
             System.err.println("Erro ao ler arquivo de pares chave-valor: " + e.getMessage());
@@ -89,8 +91,7 @@ public final class Servicos {
 
         while (executarMenu) {
             System.out.println("""
-                \n
-                Escolha o comando:
+                \nEscolha o comando:
 
                 [0] Listar vizinhos
                 [1] HELLO
@@ -148,5 +149,11 @@ public final class Servicos {
             noEscolhidoOrigem = null;
             comandoEscolhido = -1;
         }
+    }
+
+    public static void arquivosDeTeste(Rede rede) {
+        criarNo("127.0.0.1:5001 topologias/topologia_ciclo_3/1.txt topologias/topologia_ciclo_3/1-values.txt", rede);
+        criarNo("127.0.0.1:5002 topologias/topologia_ciclo_3/2.txt topologias/topologia_ciclo_3/2-values.txt", rede);
+        criarNo("127.0.0.1:5003 topologias/topologia_ciclo_3/3.txt topologias/topologia_ciclo_3/3-values.txt", rede);
     }
 }

@@ -18,6 +18,6 @@ public class Rede {
 
     public Rede(){
         this.nosDaRede = new HashMap<>();
-        this.ttlPadrao = 100;
+        this.ttlPadrao = 2;
     }
 }

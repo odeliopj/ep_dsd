@@ -1,2 +1,2 @@
-primeiro carro
-segundo casa
+carro carro
+casa casa
