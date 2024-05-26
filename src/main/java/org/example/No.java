@@ -237,8 +237,8 @@ public class No {
             String msgValorEncontrado = String.join(" ", partesMsgFlooding);
 
             try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-                out.println(msgValorEncontrado);
                 System.out.println("Envio de 'chave-valor' para " + enderecoPortaOrigem + " feito com sucesso.");
+                out.println(msgValorEncontrado);
             } catch (IOException e) {
                 System.err.println("Erro ao enviar resposta FLOODING: " + e.getMessage());
             }
