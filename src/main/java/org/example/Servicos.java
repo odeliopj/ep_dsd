@@ -33,7 +33,7 @@ public final class Servicos {
             lerArquivoVizinhos(novoNo, caminhoVizinhos);
 
         if (caminhoChaveValor != null)
-            lerArquivoChaveValor(novoNo, caminhoVizinhos);
+            lerArquivoChaveValor(novoNo, caminhoChaveValor);
 
         System.out.println("Nó " + enderecoCriarNo + ":" + portaCriarNo + " criado com sucesso.");
     }
