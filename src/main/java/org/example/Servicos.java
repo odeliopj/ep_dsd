@@ -123,8 +123,8 @@ public final class Servicos {
                     noEscolhidoOrigem.enviarHello();
                     break;
                 case 2:
-//                    ServicoComandos.enviarSearchFlooding(noEscolhidoOrigem);
-//                    break;
+                    noEscolhidoOrigem.iniciarSearchFlooding();
+                    break;
                 case 3:
 //                    ServicoComandos.enviarSearchRandomWalk(noEscolhidoOrigem);
 //                    break;

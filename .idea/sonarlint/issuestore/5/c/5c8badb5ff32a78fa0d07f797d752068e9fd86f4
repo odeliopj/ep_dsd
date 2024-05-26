@@ -1,27 +1,22 @@
 
-Y
-java:S6208‰"CMerge the previous cases into this one using comma-separated label.(û¿4
-e
-java:S2259{"OA "NullPointerException" could be thrown; "noEscolhidoOrigem" is nullable here.(Óç±à
-j
-java:S2259x"OA "NullPointerException" could be thrown; "noEscolhidoOrigem" is nullable here.(Ü‘ûªùÿÿÿÿ
-U
-java:S1118":Add a private constructor to hide the implicit public one.(†É‘øÿÿÿÿ
-E	java:S106"+Replace this use of System.out by a logger.(Ì§Ğİúÿÿÿÿ
-@	java:S106"+Replace this use of System.out by a logger.(šÌ¡°
-E	java:S106&"+Replace this use of System.out by a logger.(¼ËÖæúÿÿÿÿ
-?	java:S1060"+Replace this use of System.err by a logger.(€¥½
-E	java:S106>"+Replace this use of System.err by a logger.(ß‚›êÿÿÿÿÿ
-@	java:S106G"+Replace this use of System.out by a logger.(”•›Î
-E	java:S106M"+Replace this use of System.out by a logger.(ÜŸœÃüÿÿÿÿ
-@	java:S106["+Replace this use of System.out by a logger.(Îñë
->
-java:S5665\"(Remove this unnecessary escape sequence.(£æ†¡
-@	java:S106k"+Replace this use of System.out by a logger.(éÿƒ‡
-@	java:S106q"+Replace this use of System.out by a logger.(ôêÉ
-V	java:S125~"<This block of commented-out lines of code should be removed.(Î™ÿšøÿÿÿÿ
-W	java:S125"<This block of commented-out lines of code should be removed.(ÖÈ÷şÿÿÿÿ
-W	java:S125„"<This block of commented-out lines of code should be removed.(îÅŞÛşÿÿÿÿ
-W	java:S125‡"<This block of commented-out lines of code should be removed.(€ÒÂ¨ıÿÿÿÿ
-@	java:S106"+Replace this use of System.out by a logger.(«œ‡P
-F	java:S106‘"+Replace this use of System.out by a logger.(‚“Ëøÿÿÿÿ
+`
+java:S6208‰"CMerge the previous cases into this one using comma-separated label.(û¿48ë»—Øú1
+\
+java:S1118":Add a private constructor to hide the implicit public one.(†É‘øÿÿÿÿ8ö»—Øú1
+L	java:S106"+Replace this use of System.out by a logger.(Ì§Ğİúÿÿÿÿ8ø»—Øú1
+G	java:S106"+Replace this use of System.out by a logger.(šÌ¡°8ø»—Øú1
+L	java:S106&"+Replace this use of System.out by a logger.(¼ËÖæúÿÿÿÿ8ù»—Øú1
+F	java:S1060"+Replace this use of System.err by a logger.(€¥½8ú»—Øú1
+L	java:S106>"+Replace this use of System.err by a logger.(ß‚›êÿÿÿÿÿ8ú»—Øú1
+G	java:S106G"+Replace this use of System.out by a logger.(”•›Î8û»—Øú1
+L	java:S106M"+Replace this use of System.out by a logger.(ÜŸœÃüÿÿÿÿ8û»—Øú1
+G	java:S106["+Replace this use of System.out by a logger.(Îñë8ü»—Øú1
+E
+java:S5665\"(Remove this unnecessary escape sequence.(£æ†¡8ü»—Øú1
+G	java:S106k"+Replace this use of System.out by a logger.(éÿƒ‡8ü»—Øú1
+G	java:S106q"+Replace this use of System.out by a logger.(ôêÉ8ı»—Øú1
+^	java:S125"<This block of commented-out lines of code should be removed.(ÖÈ÷şÿÿÿÿ8ş»—Øú1
+^	java:S125„"<This block of commented-out lines of code should be removed.(îÅŞÛşÿÿÿÿ8ş»—Øú1
+^	java:S125‡"<This block of commented-out lines of code should be removed.(€ÒÂ¨ıÿÿÿÿ8ş»—Øú1
+G	java:S106"+Replace this use of System.out by a logger.(«œ‡P8ş»—Øú1
+M	java:S106‘"+Replace this use of System.out by a logger.(‚“Ëøÿÿÿÿ8ş»—Øú1
