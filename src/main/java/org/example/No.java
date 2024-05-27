@@ -17,6 +17,10 @@ public class No {
     private ServerSocket serverSocketEscuta;
     private int numeroSequenciaMsg;
     private Rede rede;
+    private int numMsgsVistasFlooding;
+    private int numMsgsVistasRandomWalk;
+    private List<Integer> numHopsValFloodingList;
+    private List<Integer> numHopsValRandomWalkList;
 
     public No(String endereco, int porta, Rede rede) {
         this.endereco = endereco;
@@ -26,6 +30,10 @@ public class No {
         this.chaveValorMap = new HashMap<>();
         this.numeroSequenciaMsg = 0;
         this.rede = rede;
+        this.numMsgsVistasFlooding = 0;
+        this.numMsgsVistasRandomWalk = 0;
+        this.numHopsValFloodingList = new ArrayList<>();
+        this.numHopsValRandomWalkList = new ArrayList<>();
         try {
             this.serverSocketEscuta = new ServerSocket(porta, 50, InetAddress.getByName(endereco));
             escutarConexoes();
@@ -87,17 +95,35 @@ public class No {
         if (partesMensagem.contains("HELLO_OK"))
             System.out.println("Mensagem de resposta HELLO_OK recebida com sucesso!");
 
-        if (partesMensagem.contains("SEARCH_FL"))
+        if (partesMensagem.contains("SEARCH_FL")) {
+            numMsgsVistasFlooding++;
             processarMsgFlooding(socketRecebimento, mensagem);
-        if (partesMensagem.contains("VAL_FL"))
+        }
+        if (partesMensagem.contains("VAL_FL")) {
+            adicionarNumSaltos(partesMensagem);
             System.out.println("Valor encontrado! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+        }
 
-        if (partesMensagem.contains("SEARCH_RW"))
+        if (partesMensagem.contains("SEARCH_RW")) {
+            numMsgsVistasRandomWalk++;
             processarMsgRandomWalk(socketRecebimento, mensagem);
-        if (partesMensagem.contains("VAL_RW"))
+        }
+        if (partesMensagem.contains("VAL_RW")) {
+            adicionarNumSaltos(partesMensagem);
             System.out.println("Valor encontrado! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+        }
     }
 
+    void adicionarNumSaltos(List<String> partesMensagem){
+        String mode = partesMensagem.get(3);
+        int hopsCount = Integer.parseInt(partesMensagem.get(6));
+
+        if (mode.equals("VAL_FL"))
+            numHopsValFloodingList.add(hopsCount);
+
+        if(mode.equals("VAL_RW"))
+            numHopsValRandomWalkList.add(hopsCount);
+    }
 
     /** Métodos HELLO **/
     public void enviarHello() {

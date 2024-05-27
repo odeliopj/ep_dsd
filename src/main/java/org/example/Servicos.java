@@ -3,6 +3,8 @@ package org.example;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public final class Servicos {
@@ -130,11 +132,11 @@ public final class Servicos {
                     noEscolhidoOrigem.iniciarSearchRandomWalk();
                     break;
                 case 4:
-//                    ServicoComandos.enviarSearchBuscaEmProfundidade(noEscolhidoOrigem);
+//                    ServicoComandos.enviarSearchBuscaEmProfundidade();
 //                    break;
                 case 5:
-//                    ServicoComandos.exibirEstatisticas(noEscolhidoOrigem);
-//                    break;
+                    exibirEstatisticas(rede);
+                    break;
                 case 6:
                     Servicos.alterarValorPadraoTTL(rede);
                     break;
@@ -155,5 +157,40 @@ public final class Servicos {
         criarNo("127.0.0.1:5001 topologias/topologia_ciclo_3/1.txt topologias/topologia_ciclo_3/1-values.txt", rede);
         criarNo("127.0.0.1:5002 topologias/topologia_ciclo_3/2.txt topologias/topologia_ciclo_3/2-values.txt", rede);
         criarNo("127.0.0.1:5003 topologias/topologia_ciclo_3/3.txt topologias/topologia_ciclo_3/3-values.txt", rede);
+    }
+
+    public static void exibirEstatisticas(Rede rede) {
+        int totalMsgsVistasFlooding = 0;
+        int totalMsgsVistasRandomWalk = 0;
+        int totalHopsFlooding = 0;
+        List<Integer> mediasPorNoFlooding = new ArrayList<>();
+        int mediaSaltosFlooding = 0;
+        int totalHopsRandomWalk = 0;
+        List<Integer> mediasPorNoRandomWak = new ArrayList<>();
+        int mediaSaltosRandomWalk = 0;
+
+        for (No no : rede.getNosDaRede().values()) {
+            totalMsgsVistasFlooding += no.getNumMsgsVistasFlooding();
+            totalMsgsVistasRandomWalk += no.getNumMsgsVistasRandomWalk();
+
+            no.getNumHopsValFloodingList().forEach(valor ->
+                    totalHopsFlooding = totalHopsFlooding + valor
+            );
+            mediasPorNoFlooding.add(totalHopsFlooding / no.getNumHopsValFloodingList().size());
+
+            no.getNumHopsValRandomWalkList().forEach(valor ->
+                    totalHopsRandomWalk = totalHopsRandomWalk + valor
+            );
+            mediasPorNoRandomWak.add(totalHopsRandomWalk / no.getNumHopsValRandomWalkList().size());
+        }
+
+        mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum() / mediasPorNoFlooding.size();
+        mediaSaltosRandomWalk = mediasPorNoRandomWak.stream().mapToInt(Integer::intValue).sum() / mediasPorNoRandomWak.size();
+
+        System.out.println("Estatisticas");
+        System.out.println("  Total de mensagens de flooding vistas: " + totalMsgsVistasFlooding);
+        System.out.println("  Total de mensagens de random walk vistas: " + totalMsgsVistasRandomWalk);
+        System.out.println("  Media de saltos ate encontrar destino por flooding: " + mediaSaltosFlooding);
+        System.out.println("  Media de saltos ate encontrar destino por random walk: " + mediaSaltosRandomWalk);
     }
 }
