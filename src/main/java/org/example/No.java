@@ -120,6 +120,7 @@ public class No {
             System.out.println("Envio feito com sucesso: " + mensagem);
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(mensagem);
+            out.flush();
 
             // Wait for the response
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -195,6 +196,7 @@ public class No {
             try (Socket socket = criarSocket(enderecoDestino, portaDestino)) {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 out.println(msgFloodingAjustada);
+                out.flush();
 
                 // Wait for the response
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

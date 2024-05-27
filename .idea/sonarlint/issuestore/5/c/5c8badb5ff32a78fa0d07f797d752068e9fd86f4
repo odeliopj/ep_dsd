@@ -1,12 +1,12 @@
 
 †
 java:S6208Š"CMerge the previous cases into this one using comma-separated label.(û¿48²‘‚·û1J$17112a41-94c0-404d-b079-a9646603cfa6
-—
-java:S2259"OA "NullPointerException" could be thrown; "noEscolhidoOrigem" is nullable here.(„Ãıÿÿÿÿ8»’‚·û1J$df719dd7-adc6-4617-8648-303145264cb9
-—
-java:S2259y"OA "NullPointerException" could be thrown; "noEscolhidoOrigem" is nullable here.(Ü‘ûªùÿÿÿÿ8»’‚·û1J$87aad78a-54a3-44e4-a649-f9213bea6e48
 ’
 java:S2259|"OA "NullPointerException" could be thrown; "noEscolhidoOrigem" is nullable here.(Óç±à8»’‚·û1J$b8b53395-3f8d-480f-b962-34e2fe8672d0
+—
+java:S2259y"OA "NullPointerException" could be thrown; "noEscolhidoOrigem" is nullable here.(Ü‘ûªùÿÿÿÿ8»’‚·û1J$87aad78a-54a3-44e4-a649-f9213bea6e48
+—
+java:S2259"OA "NullPointerException" could be thrown; "noEscolhidoOrigem" is nullable here.(„Ãıÿÿÿÿ8»’‚·û1J$df719dd7-adc6-4617-8648-303145264cb9
 ‚
 java:S1118":Add a private constructor to hide the implicit public one.(†É‘øÿÿÿÿ8½’‚·û1J$5e294039-fb6f-4914-9521-fed96b5b9277
 r	java:S106"+Replace this use of System.out by a logger.(Ì§Ğİúÿÿÿÿ8¿’‚·û1J$06001db2-67f5-4a70-a7cb-2a49cb6ccf23
