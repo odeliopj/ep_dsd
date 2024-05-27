@@ -42,7 +42,7 @@ public final class Servicos {
         try (BufferedReader br = new BufferedReader(new FileReader(caminhoVizinhos))) {
             String linha;
             while ((linha = br.readLine()) != null) {
-                no.getVizinhos().add(linha);
+                no.getVizinhosList().add(linha);
             }
         } catch (IOException e) {
             System.err.println("Erro ao ler arquivo de vizinhos: " + e.getMessage());
@@ -127,8 +127,8 @@ public final class Servicos {
                     noEscolhidoOrigem.iniciarSearchFlooding();
                     break;
                 case 3:
-//                    ServicoComandos.enviarSearchRandomWalk(noEscolhidoOrigem);
-//                    break;
+                    noEscolhidoOrigem.iniciarSearchRandomWalk();
+                    break;
                 case 4:
 //                    ServicoComandos.enviarSearchBuscaEmProfundidade(noEscolhidoOrigem);
 //                    break;
