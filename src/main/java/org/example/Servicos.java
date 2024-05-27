@@ -166,26 +166,26 @@ public final class Servicos {
         List<Integer> mediasPorNoFlooding = new ArrayList<>();
         int mediaSaltosFlooding = 0;
         int totalHopsRandomWalk = 0;
-        List<Integer> mediasPorNoRandomWak = new ArrayList<>();
+        List<Integer> mediasPorNoRandomWalk = new ArrayList<>();
         int mediaSaltosRandomWalk = 0;
 
         for (No no : rede.getNosDaRede().values()) {
             totalMsgsVistasFlooding += no.getNumMsgsVistasFlooding();
             totalMsgsVistasRandomWalk += no.getNumMsgsVistasRandomWalk();
 
-            no.getNumHopsValFloodingList().forEach(valor ->
-                    totalHopsFlooding = totalHopsFlooding + valor
-            );
-            mediasPorNoFlooding.add(totalHopsFlooding / no.getNumHopsValFloodingList().size());
+            totalHopsFlooding = no.getNumHopsValFloodingList().stream().mapToInt(Integer::intValue).sum();
+            if (!no.getNumHopsValFloodingList().isEmpty()) {
+                mediasPorNoFlooding.add(totalHopsFlooding / no.getNumHopsValFloodingList().size());
+            }
 
-            no.getNumHopsValRandomWalkList().forEach(valor ->
-                    totalHopsRandomWalk = totalHopsRandomWalk + valor
-            );
-            mediasPorNoRandomWak.add(totalHopsRandomWalk / no.getNumHopsValRandomWalkList().size());
+            totalHopsRandomWalk = no.getNumHopsValRandomWalkList().stream().mapToInt(Integer::intValue).sum();
+            if (!no.getNumHopsValRandomWalkList().isEmpty()) {
+                mediasPorNoRandomWalk.add(totalHopsRandomWalk / no.getNumHopsValRandomWalkList().size());
+            }
         }
 
         mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum() / mediasPorNoFlooding.size();
-        mediaSaltosRandomWalk = mediasPorNoRandomWak.stream().mapToInt(Integer::intValue).sum() / mediasPorNoRandomWak.size();
+        mediaSaltosRandomWalk = mediasPorNoRandomWalk.stream().mapToInt(Integer::intValue).sum() / mediasPorNoRandomWalk.size();
 
         System.out.println("Estatisticas");
         System.out.println("  Total de mensagens de flooding vistas: " + totalMsgsVistasFlooding);
