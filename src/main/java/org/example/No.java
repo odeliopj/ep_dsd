@@ -21,6 +21,7 @@ public class No {
     private int numMsgsVistasRandomWalk;
     private List<Integer> numHopsValFloodingList;
     private List<Integer> numHopsValRandomWalkList;
+    private boolean escutarConexoes;
 
     public No(String endereco, int porta, Rede rede) {
         this.endereco = endereco;
@@ -34,6 +35,7 @@ public class No {
         this.numMsgsVistasRandomWalk = 0;
         this.numHopsValFloodingList = new ArrayList<>();
         this.numHopsValRandomWalkList = new ArrayList<>();
+        this.escutarConexoes = true;
         try {
             this.serverSocketEscuta = new ServerSocket(porta, 50, InetAddress.getByName(endereco));
             escutarConexoes();
@@ -62,6 +64,8 @@ public class No {
                 System.out.println("[" + i + "] " + vizinhosList.get(i));
             }
         }
+
+        Servicos.executarMenu = true;
     }
 
     /** Métodos criação sockets **/
@@ -70,8 +74,9 @@ public class No {
     }
 
     private void escutarConexoes() {
+
         new Thread(() -> {
-            while (true) {
+            while (escutarConexoes) {
                 try {
                     Socket socketRecebimento = serverSocketEscuta.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socketRecebimento.getInputStream()));
@@ -90,27 +95,43 @@ public class No {
     private void receberMensagens(Socket socketRecebimento, String mensagem) {
         List<String> partesMensagem = Arrays.asList(mensagem.split(" "));
 
+        /* HELLO */
         if (partesMensagem.contains("HELLO"))
             processarMsgHello(socketRecebimento, mensagem);
-        if (partesMensagem.contains("HELLO_OK"))
-            System.out.println("Mensagem de resposta HELLO_OK recebida com sucesso!");
 
-        if (partesMensagem.contains("SEARCH_FL")) {
+        else if (partesMensagem.contains("HELLO_OK")) {
+            System.out.println("  OK - Recebida com sucesso: " + mensagem);
+            Servicos.executarMenu = true;
+            escutarConexoes = false;
+        }
+
+        /* FLOODING */
+        else if (partesMensagem.contains("SEARCH_FL")) {
             numMsgsVistasFlooding++;
             processarMsgFlooding(socketRecebimento, mensagem);
         }
-        if (partesMensagem.contains("VAL_FL")) {
+
+        else if (partesMensagem.contains("FL_OK"))
+            System.out.println("  OK - Recebida com sucesso: " + "'" + mensagem + "'");
+
+        else if (partesMensagem.contains("VAL_FL")) {
             adicionarNumSaltos(partesMensagem);
-            System.out.println("Valor encontrado! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+            System.out.println("Chave encontrada! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+            Servicos.executarMenu = true;
+            escutarConexoes = false;
         }
 
-        if (partesMensagem.contains("SEARCH_RW")) {
+        /* RANDOM WALK */
+        else if (partesMensagem.contains("SEARCH_RW")) {
             numMsgsVistasRandomWalk++;
             processarMsgRandomWalk(socketRecebimento, mensagem);
         }
-        if (partesMensagem.contains("VAL_RW")) {
+
+        else if (partesMensagem.contains("VAL_RW")) {
             adicionarNumSaltos(partesMensagem);
-            System.out.println("Valor encontrado! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+            System.out.println("Chave encontrada! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+            Servicos.executarMenu = true;
+            escutarConexoes = false;
         }
     }
 
@@ -127,6 +148,7 @@ public class No {
 
     /** Métodos HELLO **/
     public void enviarHello() {
+        escutarConexoes = true;
         System.out.println("Escolha o vizinho:");
         listarVizinhos();
 
@@ -146,9 +168,9 @@ public class No {
         System.out.println("Encaminhando mensagem " + "'" + mensagem + "'" + " para " + enderecoDestino + ":" + portaDestino);
 
         try (Socket socket = criarSocket(noDestino.getEndereco(), noDestino.getPorta())) {
-            System.out.println("Envio feito com sucesso: " + mensagem);
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(mensagem);
+            System.out.println("  Envio feito com sucesso: " + "'" + mensagem + "'");
             out.flush();
 
             // Wait for the response
@@ -163,7 +185,7 @@ public class No {
     }
 
     public void processarMsgHello(Socket socketRecebimento, String mensagem) {
-        System.out.println("Mensagem recebida: " + mensagem);
+        System.out.println("Mensagem recebida: " + "'" + mensagem + "'");
         String[] partesMensagem = mensagem.split(" ");
         String enderecoPortaOrigem = partesMensagem[0];
 
@@ -173,11 +195,10 @@ public class No {
         }
         System.out.println("  Vizinho ja esta na tabela: " + enderecoPortaOrigem);
 
-        // Enviar resposta HELLO_OK na mesma conexão
+        // Enviar confirmação HELLO_OK na mesma conexão
         String operacao = "HELLO_OK";
         String mensagemResposta = String.format("%s %s", endereco + ":" + porta, operacao);
         try (PrintWriter out = new PrintWriter(socketRecebimento.getOutputStream(), true)) {
-            System.out.println("\nEnvio de HELLO_OK para " + enderecoPortaOrigem + " feito com sucesso.");
             out.println(mensagemResposta);
         } catch (IOException e) {
             System.err.println("Erro ao enviar resposta HELLO_OK: " + e.getMessage());
@@ -186,13 +207,15 @@ public class No {
 
     /** Métodos FLOODING **/
     public void iniciarSearchFlooding() {
+        escutarConexoes = true;
         System.out.print("Digite a chave a ser buscada: ");
         Scanner scannerFlooding = new Scanner(System.in);
         String chaveBuscada = scannerFlooding.nextLine();
 
         if (chaveValorMap.containsKey(chaveBuscada)){
             System.out.println("Valor na tabela local!");
-            System.out.println("      Chave: " + chaveBuscada + " Valor: " + chaveValorMap.get(chaveBuscada));
+            System.out.println("  Chave: " + chaveBuscada + " >" + " Valor: " + chaveValorMap.get(chaveBuscada));
+            Servicos.executarMenu = true;
         } else {
             String enderecoPortaOrigem = endereco + ":" + porta;
             numeroSequenciaMsg++;
@@ -223,9 +246,12 @@ public class No {
             String enderecoDestino = vizinho.split(":")[0];
             int portaDestino =  Integer.parseInt(vizinho.split(":")[1]);
 
+            System.out.println("Encaminhando mensagem " + "'" + msgFloodingAjustada + "'" + " para " + enderecoDestino + ":" + portaDestino);
+
             try (Socket socket = criarSocket(enderecoDestino, portaDestino)) {
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 out.println(msgFloodingAjustada);
+                System.out.println("  Envio feito com sucesso: "+ "'" + msgFloodingAjustada + "'");
                 out.flush();
 
                 // aguardar resposta
@@ -244,8 +270,18 @@ public class No {
         List<String> partesMsgFlooding = Arrays.asList(mensagem.split(" "));
         String enderecoPortaOrigem = partesMsgFlooding.get(0);
         String enderecoOrigem = enderecoPortaOrigem.split(":")[0];
+        int portaOrigem = Integer.parseInt(enderecoPortaOrigem.split(":")[1]);
         String numSeqMsg = partesMsgFlooding.get(1);
         String chaveBuscada = partesMsgFlooding.get(5);
+
+        // Enviar confirmação FL_OK na mesma conexão
+        String operacao = "FL_OK";
+        String mensagemResposta = String.format("%s %s", endereco + ":" + porta, operacao);
+        try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+            out.println(mensagemResposta);
+        } catch (IOException e) {
+            System.err.println("Erro ao enviar resposta" + operacao + ":" + e.getMessage());
+        }
 
         // decrementar TTL
         int ttl = Integer.parseInt(partesMsgFlooding.get(2));
@@ -254,6 +290,7 @@ public class No {
 
         if (msgsVistasList.contains(enderecoOrigem + ":" + numSeqMsg)) {
             System.out.println("Flooding: Mensagem repetida");
+            Servicos.executarMenu = true;
             return;
         }
 
@@ -270,11 +307,28 @@ public class No {
             partesMsgFlooding.set(5, chaveValorMap.get(chaveBuscada));
             String msgValorEncontrado = String.join(" ", partesMsgFlooding);
 
-            try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-                System.out.println("Envio de 'chave-valor' para " + enderecoPortaOrigem + " feito com sucesso.");
+            System.out.println("ENCONTRADO - Encaminhando mensagem " + "'" + msgValorEncontrado + "'" + " para " + enderecoPortaOrigem);
+
+//            try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
+//                out.println(msgValorEncontrado);
+//            } catch (IOException e) {
+//                System.err.println("Erro ao enviar resposta FLOODING: " + e.getMessage());
+//            }
+//            return;
+            try (Socket socketEnvioEncontrado = criarSocket(enderecoOrigem, portaOrigem)) {
+                PrintWriter out = new PrintWriter(socketEnvioEncontrado.getOutputStream(), true);
                 out.println(msgValorEncontrado);
+                System.out.println("  Envio feito com sucesso: "+ "'" + msgValorEncontrado + "'");
+                out.flush();
+
+                // aguardar resposta
+                BufferedReader in = new BufferedReader(new InputStreamReader(socketEnvioEncontrado.getInputStream()));
+                String resposta = in.readLine();
+                if (resposta != null) {
+                    receberMensagens(socketEnvioEncontrado, resposta);
+                }
             } catch (IOException e) {
-                System.err.println("Erro ao enviar resposta FLOODING: " + e.getMessage());
+                System.err.println("Erro ao enviar mensagem de ENCONTRADO: " + msgValorEncontrado);
             }
             return;
         }
@@ -282,10 +336,11 @@ public class No {
         // descartar mensagem se TTL = 0
         if (ttl == 0) {
             System.out.println("TTL igual a zero, descartando mensagem");
+            Servicos.executarMenu = true;
             return;
         }
 
-        // re-enviar msg para os nós vizinhos (com exceção do nó de origem da msg)
+        // reenviar msg para os nós vizinhos (com exceção do nó de origem da msg)
         String msgFloodingAjustada = String.join(" ", partesMsgFlooding);
         List<String> nosDestino = new ArrayList<>();
         vizinhosList.forEach(vizinho -> {
@@ -298,6 +353,7 @@ public class No {
 
     /** Métodos RANDOM WALK **/
     public void iniciarSearchRandomWalk(){
+        escutarConexoes = true;
         System.out.print("Digite a chave a ser buscada: ");
         Scanner scannerFlooding = new Scanner(System.in);
         String chaveBuscada = scannerFlooding.nextLine();

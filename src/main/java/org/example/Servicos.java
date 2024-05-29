@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public final class Servicos {
+    public static boolean executarMenu = true;
 
     public static void alterarValorPadraoTTL(Rede rede) {
         Scanner scanner = new Scanner(System.in);
@@ -86,12 +87,13 @@ public final class Servicos {
     }
 
     public static void menuComandos(Rede rede) {
-        boolean executarMenu = true;
         int comandoEscolhido = -1;
         String enderecoPortaNoEscolhido = null;
         No noEscolhidoOrigem = null;
 
         while (executarMenu) {
+            executarMenu = false;
+
             System.out.println("""
                 \nEscolha o comando:
 
