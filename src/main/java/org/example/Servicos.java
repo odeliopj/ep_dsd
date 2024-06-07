@@ -134,8 +134,8 @@ public final class Servicos {
                     noEscolhidoOrigem.iniciarSearchRandomWalk();
                     break;
                 case 4:
-//                    ServicoComandos.enviarSearchBuscaEmProfundidade();
-//                    break;
+                    noEscolhidoOrigem.iniciarSearchBuscaProfundidade();
+                    break;
                 case 5:
                     exibirEstatisticas(rede);
                     break;
@@ -188,6 +188,11 @@ public final class Servicos {
 
         mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum() / mediasPorNoFlooding.size();
         mediaSaltosRandomWalk = mediasPorNoRandomWalk.stream().mapToInt(Integer::intValue).sum() / mediasPorNoRandomWalk.size();
+
+//        // CONTA ERRADA - RETIRAR
+//        mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum();
+//        mediaSaltosRandomWalk = mediasPorNoRandomWalk.stream().mapToInt(Integer::intValue).sum();
+
 
         System.out.println("Estatisticas");
         System.out.println("  Total de mensagens de flooding vistas: " + totalMsgsVistasFlooding);
