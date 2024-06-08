@@ -24,7 +24,6 @@ public class No {
     private List<Integer> numHopsValRandomWalkList;
     private List<Integer> numHopsValBPList;
     private List<InfoMsgBP> infoMsgVistaListBP;
-    private boolean escutarConexoes;
 
     public No(String endereco, int porta, Rede rede) {
         this.endereco = endereco;
@@ -40,7 +39,6 @@ public class No {
         this.numHopsValFloodingList = new ArrayList<>();
         this.numHopsValRandomWalkList = new ArrayList<>();
         this.numHopsValBPList = new ArrayList<>();
-        this.escutarConexoes = true;
         this.infoMsgVistaListBP = new ArrayList<>();
         try {
             this.serverSocketEscuta = new ServerSocket(porta, 50, InetAddress.getByName(endereco));
@@ -74,7 +72,7 @@ public class No {
 
     private void escutarConexoes() {
         new Thread(() -> {
-            while (escutarConexoes) {
+            while (Servicos.escutarConexoes) {
                 try {
                     Socket socketRecebimento = serverSocketEscuta.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(socketRecebimento.getInputStream()));
@@ -100,7 +98,7 @@ public class No {
         else if (partesMensagem.contains("HELLO_OK")) {
             System.out.println("  OK - Recebida com sucesso: " + mensagem);
             Servicos.executarMenu = true;
-            escutarConexoes = false;
+            Servicos.escutarConexoes = false;
         }
 
         /* FLOODING */
@@ -115,8 +113,9 @@ public class No {
         else if (partesMensagem.contains("VAL_FL")) {
             adicionarNumSaltos(partesMensagem);
             System.out.println("Chave encontrada! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+            Servicos.exibirEstatisticas(rede);
             Servicos.executarMenu = true;
-            escutarConexoes = false;
+            Servicos.escutarConexoes = false;
         }
 
         /* RANDOM WALK */
@@ -128,8 +127,9 @@ public class No {
         else if (partesMensagem.contains("VAL_RW")) {
             adicionarNumSaltos(partesMensagem);
             System.out.println("Chave encontrada! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+            Servicos.exibirEstatisticas(rede);
             Servicos.executarMenu = true;
-            escutarConexoes = false;
+            Servicos.escutarConexoes = false;
         }
 
         /* BUSCA PROFUNDIDADE */
@@ -141,8 +141,9 @@ public class No {
         else if (partesMensagem.contains("VAL_BP")) {
             adicionarNumSaltos(partesMensagem);
             System.out.println("Chave encontrada! Chave: " + partesMensagem.get(4) + " >" + " Valor: " + partesMensagem.get(5));
+            Servicos.exibirEstatisticas(rede);
             Servicos.executarMenu = true;
-            escutarConexoes = false;
+            Servicos.escutarConexoes = false;
         }
     }
 
@@ -153,17 +154,16 @@ public class No {
         if (mode.equals("VAL_FL"))
             numHopsValFloodingList.add(hopsCount);
 
-        if(mode.equals("VAL_RW"))
+        if (mode.equals("VAL_RW"))
             numHopsValRandomWalkList.add(hopsCount);
 
-        if(mode.equals("VAL_BP"))
+        if (mode.equals("VAL_BP"))
             numHopsValBPList.add(hopsCount);
     }
 
 /***************************************************************************************************************************************************/
     /** Métodos HELLO **/
     public void enviarHello() {
-        escutarConexoes = true;
         System.out.println("Escolha o vizinho:");
         listarVizinhos();
 
@@ -223,7 +223,6 @@ public class No {
 /***************************************************************************************************************************************************/
     /** Métodos FLOODING **/
     public void iniciarSearchFlooding() {
-        escutarConexoes = true;
         System.out.print("Digite a chave a ser buscada: ");
         Scanner scannerFlooding = new Scanner(System.in);
         String chaveBuscada = scannerFlooding.nextLine();
@@ -318,12 +317,6 @@ public class No {
 
             System.out.println("ENCONTRADO - Encaminhando mensagem " + "'" + msgValorEncontrado + "'" + " para " + enderecoPortaOrigem);
 
-//            try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-//                out.println(msgValorEncontrado);
-//            } catch (IOException e) {
-//                System.err.println("Erro ao enviar resposta FLOODING: " + e.getMessage());
-//            }
-//            return;
             try (Socket socketEnvioEncontrado = criarSocket(enderecoOrigem, portaOrigem)) {
                 PrintWriter out = new PrintWriter(socketEnvioEncontrado.getOutputStream(), true);
                 out.println(msgValorEncontrado);
@@ -356,7 +349,6 @@ public class No {
 /***************************************************************************************************************************************************/
     /** Métodos RANDOM WALK **/
     public void iniciarSearchRandomWalk(){
-        escutarConexoes = true;
         System.out.print("Digite a chave a ser buscada: ");
         Scanner scannerFlooding = new Scanner(System.in);
         String chaveBuscada = scannerFlooding.nextLine();
@@ -464,7 +456,6 @@ public class No {
 /***************************************************************************************************************************************************/
     /** Métodos BUSCA EM PROFUNDIDADE **/
     public void iniciarSearchBuscaProfundidade(){
-        escutarConexoes = true;
         System.out.print("Digite a chave a ser buscada: ");
         Scanner scannerFlooding = new Scanner(System.in);
         String chaveBuscada = scannerFlooding.nextLine();
@@ -538,13 +529,17 @@ public class No {
             partesMsgChaveEncontrada.add("1");
             String msgValorEncontrado = String.join(" ", partesMsgChaveEncontrada);
 
-            try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-                System.out.println("Envio de 'chave-valor' para " + partesMsgBuscaProfundidade + " feito com sucesso.");
+            String enderecoPortaOriginal = partesMsgBuscaProfundidade.get(0);
+            String enderecoOriginal = enderecoPortaOriginal.split(":")[0];
+            int portaOriginal = Integer.parseInt(enderecoPortaOriginal.split(":")[1]);
+
+            try (Socket socketEnvio = criarSocket(enderecoOriginal, portaOriginal)) {
+                PrintWriter out = new PrintWriter(socketEnvio.getOutputStream(), true);
                 out.println(msgValorEncontrado);
+                out.flush();
             } catch (IOException e) {
-                System.err.println("Erro ao enviar resposta Busca em Profundiade: " + e.getMessage());
+                System.err.println("Erro ao enviar mensagem Busca em Profundidade: " + msgValorEncontrado);
             }
-            return;
         }
 
         // decrementar TTL
@@ -639,8 +634,6 @@ public class No {
             }
         }
     }
-
-
 
     private String incrementarHopPortAndNumSeqBP(String msg){
         // incrementar HOP_COUNT

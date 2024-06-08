@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public final class Servicos {
     public static boolean executarMenu = true;
+    public static boolean escutarConexoes = true;;
 
     public static void alterarValorPadraoTTL(Rede rede) {
         Scanner scanner = new Scanner(System.in);
@@ -186,13 +187,11 @@ public final class Servicos {
             }
         }
 
-        mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum() / mediasPorNoFlooding.size();
-        mediaSaltosRandomWalk = mediasPorNoRandomWalk.stream().mapToInt(Integer::intValue).sum() / mediasPorNoRandomWalk.size();
+        if(!mediasPorNoFlooding.isEmpty())
+            mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum() / mediasPorNoFlooding.size();
 
-//        // CONTA ERRADA - RETIRAR
-//        mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum();
-//        mediaSaltosRandomWalk = mediasPorNoRandomWalk.stream().mapToInt(Integer::intValue).sum();
-
+        if(!mediasPorNoRandomWalk.isEmpty())
+            mediaSaltosRandomWalk = mediasPorNoRandomWalk.stream().mapToInt(Integer::intValue).sum() / mediasPorNoRandomWalk.size();
 
         System.out.println("Estatisticas");
         System.out.println("  Total de mensagens de flooding vistas: " + totalMsgsVistasFlooding);
