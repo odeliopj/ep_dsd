@@ -19,8 +19,10 @@ public class No {
     private Rede rede;
     private int numMsgsVistasFlooding;
     private int numMsgsVistasRandomWalk;
+    private int numMsgsVistasBP;
     private List<Integer> numHopsValFloodingList;
     private List<Integer> numHopsValRandomWalkList;
+    private List<Integer> numHopsValBPList;
     private List<InfoMsgBP> infoMsgVistaListBP;
     private boolean escutarConexoes;
 
@@ -34,8 +36,10 @@ public class No {
         this.rede = rede;
         this.numMsgsVistasFlooding = 0;
         this.numMsgsVistasRandomWalk = 0;
+        this.numMsgsVistasBP = 0;
         this.numHopsValFloodingList = new ArrayList<>();
         this.numHopsValRandomWalkList = new ArrayList<>();
+        this.numHopsValBPList = new ArrayList<>();
         this.escutarConexoes = true;
         this.infoMsgVistaListBP = new ArrayList<>();
         try {
@@ -48,13 +52,6 @@ public class No {
 
     public void adicionarChaveValor(String chave, String valor) {
         this.chaveValorMap.put(chave, valor);
-    }
-
-    public void adicionarVizinho(String enderecoPortaVizinho) {
-        System.out.println("Tentando adicionar vizinho: " + enderecoPortaVizinho);
-
-        if (!vizinhosList.contains(enderecoPortaVizinho))
-            vizinhosList.add(enderecoPortaVizinho);
     }
 
     public void listarVizinhos(){
@@ -76,7 +73,6 @@ public class No {
     }
 
     private void escutarConexoes() {
-
         new Thread(() -> {
             while (escutarConexoes) {
                 try {
@@ -138,7 +134,7 @@ public class No {
 
         /* BUSCA PROFUNDIDADE */
         else if (partesMensagem.contains("SEARCH_BP")) {
-            numMsgsVistasRandomWalk++;
+            numMsgsVistasBP++;
             processarMsgBuscaProfundidade(socketRecebimento, mensagem);
         }
 
@@ -159,6 +155,9 @@ public class No {
 
         if(mode.equals("VAL_RW"))
             numHopsValRandomWalkList.add(hopsCount);
+
+        if(mode.equals("VAL_BP"))
+            numHopsValBPList.add(hopsCount);
     }
 
 /***************************************************************************************************************************************************/
@@ -476,7 +475,6 @@ public class No {
             System.out.println("      Chave: " + chaveBuscada + " >" + " Valor: " + chaveValorMap.get(chaveBuscada));
         } else {
             String enderecoPortaAtual = endereco + ":" + porta;
-            numeroSequenciaMsg++;
             String seqNum = String.valueOf(numeroSequenciaMsg);
             String ttl = String.valueOf(rede.getTtlPadrao());
             String searchMode = "SEARCH_BP";
@@ -496,7 +494,7 @@ public class No {
             vizinhosCandidatosList.remove(noVizinhoAtivo);
 
             // adicionar info da primeira msg na List de InfoMsgBP deste nó
-            infoMsgVistaListBP.get(0).setIdentificacaoMsg(enderecoPortaAtual + ">" + numeroSequenciaMsg);
+            infoMsgVistaListBP.get(0).setIdentificacaoMsg(enderecoPortaAtual + "-" + numeroSequenciaMsg);
             infoMsgVistaListBP.get(0).setNoMae(enderecoPortaAtual);
             infoMsgVistaListBP.get(0).setNoFilho(noVizinhoAtivo);
             infoMsgVistaListBP.get(0).getVizinhosCandidatosList().remove(noVizinhoAtivo);
@@ -507,15 +505,8 @@ public class No {
     }
 
     public void enviarMsgBuscaProfundidade(String msgBuscaProfundidade, String noEscolhidoEnderecoPorta) {
-        // incrementar HOP_COUNT
-        List<String> partesMsgFlooding = Arrays.asList(msgBuscaProfundidade.split(" "));
-        int hopCount = Integer.parseInt(partesMsgFlooding.get(6));
-        hopCount++;
-        partesMsgFlooding.set(6, String.valueOf(hopCount));
-        String msgBuscaProfundidadeAjustada = String.join(" ", partesMsgFlooding);
-
-        // ajustar LAST_HOP_PORT
-        partesMsgFlooding.set(4, String.valueOf(porta));
+        // ajustar msg incrementando valores antes do envio
+        String msgBuscaProfundidadeAjustada = incrementarHopPortAndNumSeqBP(msgBuscaProfundidade);
 
         // enviar msg
         String enderecoDestino = noEscolhidoEnderecoPorta.split(":")[0];
@@ -539,7 +530,6 @@ public class No {
 
             List<String> partesMsgChaveEncontrada = new ArrayList<>();
             partesMsgChaveEncontrada.add(endereco + ":" + porta);
-            numeroSequenciaMsg++;
             partesMsgChaveEncontrada.add(String.valueOf(numeroSequenciaMsg));
             partesMsgChaveEncontrada.add(String.valueOf(rede.getTtlPadrao()));
             partesMsgChaveEncontrada.add("VAL_BP");
@@ -569,7 +559,7 @@ public class No {
         }
 
         // checar se já foram inicializados: 'nó mãe' e 'lista de vizinhos candidatos'
-        String identificacaoMsgRecebida = partesMsgBuscaProfundidade.get(0) + ">" + partesMsgBuscaProfundidade.get(1);
+        String identificacaoMsgRecebida = partesMsgBuscaProfundidade.get(0) + "-" + partesMsgBuscaProfundidade.get(1);
         String noAnterior = endereco + ":" + partesMsgBuscaProfundidade.get(4);
         Optional<InfoMsgBP> optionalInfoMsg = existeInfoMsgVistaBP(infoMsgVistaListBP, identificacaoMsgRecebida);
 
@@ -602,7 +592,7 @@ public class No {
         }
 
         // 2) Se um ciclo foi detectado
-        else if (noVizinhoAtivo != null && !noVizinhoAtivo.isEmpty() && !noVizinhoAtivo.equals(noAnterior)){
+        else if (noVizinhoAtivo != null  && !noVizinhoAtivo.equals(noAnterior)){
             System.out.println("BP: ciclo detectado, devolvendo a mensagem...");
             enviarMsgBuscaProfundidade(msgBuscaProfundidade, noAnterior);
             return;
@@ -631,7 +621,7 @@ public class No {
     }
 
     /* Métodos auxiliares */
-    public Optional<InfoMsgBP> existeInfoMsgVistaBP(List<InfoMsgBP> msgsVistasInfoListBP, String identificacaoMsgRecebida) {
+    private Optional<InfoMsgBP> existeInfoMsgVistaBP(List<InfoMsgBP> msgsVistasInfoListBP, String identificacaoMsgRecebida) {
         for (InfoMsgBP infoMsg : msgsVistasInfoListBP) {
             if (infoMsg.getIdentificacaoMsg().equals(identificacaoMsgRecebida)) {
                 return Optional.of(infoMsg);
@@ -641,12 +631,31 @@ public class No {
         return Optional.empty();
     }
 
-    public static void ajustarVizinhosCandidatosBP(List<InfoMsgBP> msgsVistasInfoListBP, String identificacaoMsgRecebida, String noAnterior) {
+    private static void ajustarVizinhosCandidatosBP(List<InfoMsgBP> msgsVistasInfoListBP, String identificacaoMsgRecebida, String noAnterior) {
         for (InfoMsgBP infoMsg : msgsVistasInfoListBP){
             if (infoMsg.getIdentificacaoMsg().equals(identificacaoMsgRecebida)){
                 infoMsg.getVizinhosCandidatosList().remove(noAnterior);
                 return;
             }
         }
+    }
+
+
+
+    private String incrementarHopPortAndNumSeqBP(String msg){
+        // incrementar HOP_COUNT
+        List<String> partesMsgBP = Arrays.asList(msg.split(" "));
+        int hopCount = Integer.parseInt(partesMsgBP.get(6));
+        hopCount++;
+        partesMsgBP.set(6, String.valueOf(hopCount));
+
+        // ajustar LAST_HOP_PORT
+        partesMsgBP.set(4, String.valueOf(porta));
+
+        // ajustar NUM_SEQ
+        numeroSequenciaMsg++;
+        partesMsgBP.set(1, String.valueOf(numeroSequenciaMsg));
+
+        return String.join(" ", partesMsgBP);
     }
 }
