@@ -21,10 +21,7 @@ public class No {
     private int numMsgsVistasRandomWalk;
     private List<Integer> numHopsValFloodingList;
     private List<Integer> numHopsValRandomWalkList;
-    private String noMae;
-    private String noVizinhoAtivo;
-    private boolean visitado;
-    private List<String> vizinhosCandidatosList = new ArrayList<>();
+    private List<InfoMsgBP> infoMsgVistaListBP;
     private boolean escutarConexoes;
 
     public No(String endereco, int porta, Rede rede) {
@@ -40,10 +37,7 @@ public class No {
         this.numHopsValFloodingList = new ArrayList<>();
         this.numHopsValRandomWalkList = new ArrayList<>();
         this.escutarConexoes = true;
-        this.noMae = "";
-        this.noVizinhoAtivo = "";
-        this.visitado = false;
-        this.vizinhosCandidatosList = new ArrayList<>();
+        this.infoMsgVistaListBP = new ArrayList<>();
         try {
             this.serverSocketEscuta = new ServerSocket(porta, 50, InetAddress.getByName(endereco));
             escutarConexoes();
@@ -167,6 +161,7 @@ public class No {
             numHopsValRandomWalkList.add(hopsCount);
     }
 
+/***************************************************************************************************************************************************/
     /** Métodos HELLO **/
     public void enviarHello() {
         escutarConexoes = true;
@@ -226,6 +221,7 @@ public class No {
         }
     }
 
+/***************************************************************************************************************************************************/
     /** Métodos FLOODING **/
     public void iniciarSearchFlooding() {
         escutarConexoes = true;
@@ -244,7 +240,7 @@ public class No {
             String ttl = String.valueOf(rede.getTtlPadrao());
             String searchMode = "SEARCH_FL";
             String lastHopPort = String.valueOf(porta);
-            String hopCount =  String.valueOf(0);
+            String hopCount =  String.valueOf(0);    // será incrementado no método enviarMsg()
             String msgFlooding = String.format("%s %s %s %s %s %s %s", enderecoPortaOrigem, seqNum, ttl, searchMode, lastHopPort, chaveBuscada, hopCount);
 
             msgsVistasList.add(endereco + ":" + numeroSequenciaMsg);
@@ -358,6 +354,7 @@ public class No {
         enviarMsgFloodingVizinhos(msgFloodingAjustada, nosDestino);
     }
 
+/***************************************************************************************************************************************************/
     /** Métodos RANDOM WALK **/
     public void iniciarSearchRandomWalk(){
         escutarConexoes = true;
@@ -440,7 +437,7 @@ public class No {
         }
 
         // descartar mensagem se TTL = 0
-        if (ttl == 0) {
+        else if (ttl == 0) {
             System.out.println("TTL igual a zero, descartando mensagem");
             return;
         }
@@ -465,6 +462,7 @@ public class No {
         enviarMsgRandomWalk(msgRandomWalk, noEscolhidoEnderecoPorta);
     }
 
+/***************************************************************************************************************************************************/
     /** Métodos BUSCA EM PROFUNDIDADE **/
     public void iniciarSearchBuscaProfundidade(){
         escutarConexoes = true;
@@ -477,26 +475,34 @@ public class No {
             System.out.println("Valor na tabela local!");
             System.out.println("      Chave: " + chaveBuscada + " >" + " Valor: " + chaveValorMap.get(chaveBuscada));
         } else {
-            String enderecoPortaOrigem = endereco + ":" + porta;
+            String enderecoPortaAtual = endereco + ":" + porta;
             numeroSequenciaMsg++;
             String seqNum = String.valueOf(numeroSequenciaMsg);
             String ttl = String.valueOf(rede.getTtlPadrao());
             String searchMode = "SEARCH_BP";
             String lastHopPort = String.valueOf(porta);
             String hopCount =  String.valueOf(0);
-            String msgBuscaProfundidade = String.format("%s %s %s %s %s %s %s", enderecoPortaOrigem, seqNum, ttl, searchMode, lastHopPort, chaveBuscada, hopCount);
+            String msgBuscaProfundidade = String.format("%s %s %s %s %s %s %s", enderecoPortaAtual, seqNum, ttl, searchMode, lastHopPort, chaveBuscada, hopCount);
 
-            // set noMae e vizinhosCandidatosList
-            noMae = enderecoPortaOrigem;
+            // set 'vizinhosCandidatosList' para primeira msg
+            List<String> vizinhosCandidatosList = new ArrayList<>();
             vizinhosCandidatosList.addAll(vizinhosList);
+            InfoMsgBP msgVista = new InfoMsgBP();
+            msgVista.setVizinhosCandidatosList(vizinhosCandidatosList);
+            infoMsgVistaListBP.add(msgVista);
 
             // seleciona um nó aleatório da lista de vizinhos, e set vizinhoAtivo
-            String noEscolhidoEnderecoPorta = vizinhosCandidatosList.get(new Random().nextInt(vizinhosCandidatosList.size()));
-            noVizinhoAtivo = noEscolhidoEnderecoPorta;
+            String noVizinhoAtivo = vizinhosCandidatosList.get(new Random().nextInt(vizinhosCandidatosList.size()));
             vizinhosCandidatosList.remove(noVizinhoAtivo);
 
+            // adicionar info da primeira msg na List de InfoMsgBP deste nó
+            infoMsgVistaListBP.get(0).setIdentificacaoMsg(enderecoPortaAtual + ">" + numeroSequenciaMsg);
+            infoMsgVistaListBP.get(0).setNoMae(enderecoPortaAtual);
+            infoMsgVistaListBP.get(0).setNoFilho(noVizinhoAtivo);
+            infoMsgVistaListBP.get(0).getVizinhosCandidatosList().remove(noVizinhoAtivo);
+
             System.out.println("Busca em profundidade iniciada");
-            enviarMsgBuscaProfundidade(msgBuscaProfundidade, noEscolhidoEnderecoPorta);
+            enviarMsgBuscaProfundidade(msgBuscaProfundidade, noVizinhoAtivo);
         }
     }
 
@@ -527,21 +533,20 @@ public class No {
         List<String> partesMsgBuscaProfundidade = Arrays.asList(mensagem.split(" "));
         String chaveBuscada = partesMsgBuscaProfundidade.get(5);
 
-        // decrementar TTL
-        int ttl = Integer.parseInt(partesMsgBuscaProfundidade.get(2));
-        ttl--;
-        partesMsgBuscaProfundidade.set(2, String.valueOf(ttl));
-
         // verificar tabela local de chave-valor
         if (chaveValorMap.containsKey(chaveBuscada)) {
-            partesMsgBuscaProfundidade.set(0, endereco + ":" + porta);
+            System.out.println("Chave encontrada!");
+
+            List<String> partesMsgChaveEncontrada = new ArrayList<>();
+            partesMsgChaveEncontrada.add(endereco + ":" + porta);
             numeroSequenciaMsg++;
-            partesMsgBuscaProfundidade.set(1, String.valueOf(numeroSequenciaMsg));
-            partesMsgBuscaProfundidade.set(2, String.valueOf(ttl));
-            partesMsgBuscaProfundidade.set(3, "VAL_BP");
-            partesMsgBuscaProfundidade.set(4, chaveBuscada);
-            partesMsgBuscaProfundidade.set(5, chaveValorMap.get(chaveBuscada));
-            String msgValorEncontrado = String.join(" ", partesMsgBuscaProfundidade);
+            partesMsgChaveEncontrada.add(String.valueOf(numeroSequenciaMsg));
+            partesMsgChaveEncontrada.add(String.valueOf(rede.getTtlPadrao()));
+            partesMsgChaveEncontrada.add("VAL_BP");
+            partesMsgChaveEncontrada.add(String.valueOf(porta));
+            partesMsgChaveEncontrada.add(chaveBuscada);
+            partesMsgChaveEncontrada.add("1");
+            String msgValorEncontrado = String.join(" ", partesMsgChaveEncontrada);
 
             try (PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
                 System.out.println("Envio de 'chave-valor' para " + partesMsgBuscaProfundidade + " feito com sucesso.");
@@ -552,46 +557,96 @@ public class No {
             return;
         }
 
+        // decrementar TTL
+        int ttl = Integer.parseInt(partesMsgBuscaProfundidade.get(2));
+        ttl--;
+        partesMsgBuscaProfundidade.set(2, String.valueOf(ttl));
+
         // descartar mensagem se TTL = 0
         if (ttl == 0) {
             System.out.println("TTL igual a zero, descartando mensagem");
             return;
         }
 
+        // checar se já foram inicializados: 'nó mãe' e 'lista de vizinhos candidatos'
+        String identificacaoMsgRecebida = partesMsgBuscaProfundidade.get(0) + ">" + partesMsgBuscaProfundidade.get(1);
         String noAnterior = endereco + ":" + partesMsgBuscaProfundidade.get(4);
-        if (!visitado){
-            noMae = endereco + ":" + partesMsgBuscaProfundidade.get(4);
-            vizinhosCandidatosList.addAll(vizinhosList);
-            visitado = true;
+        Optional<InfoMsgBP> optionalInfoMsg = existeInfoMsgVistaBP(infoMsgVistaListBP, identificacaoMsgRecebida);
+
+        if (optionalInfoMsg.isEmpty()) {
+            InfoMsgBP infoMsgVista = new InfoMsgBP();
+            infoMsgVista.setIdentificacaoMsg(identificacaoMsgRecebida);
+            infoMsgVista.setNoMae(noAnterior);
+            infoMsgVista.setVizinhosCandidatosList(new ArrayList<>(vizinhosList));
+
+            infoMsgVistaListBP.add(infoMsgVista);
         }
 
-        // remove nó anterior/origem
-        vizinhosCandidatosList.remove(noAnterior);
+        // remove nó que enviou a mensagem, caso esteja na lista de vizinhos candidatos
+        ajustarVizinhosCandidatosBP(infoMsgVistaListBP, identificacaoMsgRecebida, noAnterior);
 
-        // condição de parada
-        if (noMae.equals(endereco + ":" + porta) && noVizinhoAtivo.equals(noAnterior) &&  vizinhosCandidatosList.isEmpty()) {
+        // formatar msg para envio
+        String msgBuscaProfundidade =  String.join(" ", partesMsgBuscaProfundidade);
+
+        /* Condições de Parada */
+        optionalInfoMsg = existeInfoMsgVistaBP(infoMsgVistaListBP, identificacaoMsgRecebida);
+        InfoMsgBP infoMsgAtual = optionalInfoMsg.orElseThrow(() -> new RuntimeException("InfoMsg not found"));
+        String noMae = infoMsgAtual.getNoMae();
+        String noVizinhoAtivo = infoMsgAtual.getNoFilho();
+        List<String> vizinhosCandidatosList = infoMsgAtual.getVizinhosCandidatosList();
+
+        // 1) Se a execução do algoritmo chegou ao fim
+        if (noMae.equals(endereco + ":" + porta) &&  vizinhosCandidatosList.isEmpty() && noVizinhoAtivo.equals(noAnterior)) {
             System.out.println("BP: Nao foi possivel localizar a chave: " + chaveBuscada);
             return;
         }
 
-        else if (!noVizinhoAtivo.isEmpty() && !noVizinhoAtivo.equals(noAnterior)){
+        // 2) Se um ciclo foi detectado
+        else if (noVizinhoAtivo != null && !noVizinhoAtivo.isEmpty() && !noVizinhoAtivo.equals(noAnterior)){
             System.out.println("BP: ciclo detectado, devolvendo a mensagem...");
-            noVizinhoAtivo = noAnterior;
+            enviarMsgBuscaProfundidade(msgBuscaProfundidade, noAnterior);
+            return;
         }
 
+        // 3) Se todos os vizinhos já foram consultados
         else if (vizinhosCandidatosList.isEmpty()){
             System.out.println("BP: nenhum vizinho encontrou a chave, retrocedendo..." );
-            noVizinhoAtivo = noMae;
+            enviarMsgBuscaProfundidade(msgBuscaProfundidade, noMae);
+            return;
         }
 
-        // sorteia próximo noAtivo
-        noVizinhoAtivo = vizinhosCandidatosList.get(new Random().nextInt(vizinhosCandidatosList.size()));
-        vizinhosCandidatosList.remove(noVizinhoAtivo);
+        else {
+            // sorteia próximo 'noAtivo'
+            String proxNoVizinhoAtivo = vizinhosCandidatosList.get(new Random().nextInt(vizinhosCandidatosList.size()));
 
-        // enviar msg
-        String msgBuscaProfundidade =  String.join(" ", partesMsgBuscaProfundidade);
-        enviarMsgBuscaProfundidade(msgBuscaProfundidade, noVizinhoAtivo);
+            // set o 'noAtivo' nas informações da msg atual
+            infoMsgAtual.setNoFilho(proxNoVizinhoAtivo);
+
+            // remove nó sorteado dos vizinhosCandidatos
+            ajustarVizinhosCandidatosBP(infoMsgVistaListBP, identificacaoMsgRecebida, proxNoVizinhoAtivo);
+
+            // enviar msg
+            enviarMsgBuscaProfundidade(msgBuscaProfundidade, proxNoVizinhoAtivo);
+        }
     }
 
+    /* Métodos auxiliares */
+    public Optional<InfoMsgBP> existeInfoMsgVistaBP(List<InfoMsgBP> msgsVistasInfoListBP, String identificacaoMsgRecebida) {
+        for (InfoMsgBP infoMsg : msgsVistasInfoListBP) {
+            if (infoMsg.getIdentificacaoMsg().equals(identificacaoMsgRecebida)) {
+                return Optional.of(infoMsg);
+            }
+        }
 
+        return Optional.empty();
+    }
+
+    public static void ajustarVizinhosCandidatosBP(List<InfoMsgBP> msgsVistasInfoListBP, String identificacaoMsgRecebida, String noAnterior) {
+        for (InfoMsgBP infoMsg : msgsVistasInfoListBP){
+            if (infoMsg.getIdentificacaoMsg().equals(identificacaoMsgRecebida)){
+                infoMsg.getVizinhosCandidatosList().remove(noAnterior);
+                return;
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@ import java.util.Scanner;
 @Setter
 @Getter
 public class Rede {
-    private Map<String, No> nosDaRede;
+    private Map<String, No> nosDaRede; // chave = "endereço:porta"
     private int ttlPadrao;
 
     public Rede(){
