@@ -78,9 +78,8 @@ public class No {
                     BufferedReader in = new BufferedReader(new InputStreamReader(socketRecebimento.getInputStream()));
                     String mensagem = in.readLine();
 
-                    if (mensagem != null) {
+                    if (mensagem != null)
                         receberMensagens(socketRecebimento, mensagem);
-                    }
                 } catch (IOException e) {
                     System.err.println("Erro ao aceitar conexão: " + e.getMessage());
                 }
@@ -263,8 +262,8 @@ public class No {
 
             System.out.println("Encaminhando mensagem " + "'" + msgFloodingAjustada + "'" + " para " + enderecoDestino + ":" + portaDestino);
 
-            try (Socket socket = criarSocket(enderecoDestino, portaDestino)) {
-                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            try (Socket clientSocket = criarSocket(enderecoDestino, portaDestino)) {
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
                 out.println(msgFloodingAjustada);
                 System.out.println("  Envio feito com sucesso: "+ "'" + msgFloodingAjustada + "'");
                 out.flush();
@@ -389,8 +388,8 @@ public class No {
         // enviar msg
         String enderecoDestino = noEscolhidoEnderecoPorta.split(":")[0];
         int portaDestino =  Integer.parseInt(noEscolhidoEnderecoPorta.split(":")[1]);
-        try (Socket socket = criarSocket(enderecoDestino, portaDestino)) {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        try (Socket clientSocket = criarSocket(enderecoDestino, portaDestino)) {
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             out.println(msgRandomWalkAjustada);
             out.flush();
         } catch (IOException e) {
@@ -485,7 +484,7 @@ public class No {
             vizinhosCandidatosList.remove(noVizinhoAtivo);
 
             // adicionar info da primeira msg na List de InfoMsgBP deste nó
-            infoMsgVistaListBP.get(0).setIdentificacaoMsg(enderecoPortaAtual + "-" + numeroSequenciaMsg);
+            infoMsgVistaListBP.get(0).setIdentificacaoMsg(enderecoPortaAtual + "-" + "1");
             infoMsgVistaListBP.get(0).setNoMae(enderecoPortaAtual);
             infoMsgVistaListBP.get(0).setNoFilho(noVizinhoAtivo);
             infoMsgVistaListBP.get(0).getVizinhosCandidatosList().remove(noVizinhoAtivo);
@@ -502,8 +501,8 @@ public class No {
         // enviar msg
         String enderecoDestino = noEscolhidoEnderecoPorta.split(":")[0];
         int portaDestino =  Integer.parseInt(noEscolhidoEnderecoPorta.split(":")[1]);
-        try (Socket socket = criarSocket(enderecoDestino, portaDestino)) {
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        try (Socket clientSocket = criarSocket(enderecoDestino, portaDestino)) {
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             out.println(msgBuscaProfundidadeAjustada);
             out.flush();
         } catch (IOException e) {
@@ -553,9 +552,10 @@ public class No {
             return;
         }
 
+        String noAnterior = endereco + ":" + partesMsgBuscaProfundidade.get(4);
+
         // checar se já foram inicializados: 'nó mãe' e 'lista de vizinhos candidatos'
         String identificacaoMsgRecebida = partesMsgBuscaProfundidade.get(0) + "-" + partesMsgBuscaProfundidade.get(1);
-        String noAnterior = endereco + ":" + partesMsgBuscaProfundidade.get(4);
         Optional<InfoMsgBP> optionalInfoMsg = existeInfoMsgVistaBP(infoMsgVistaListBP, identificacaoMsgRecebida);
 
         if (optionalInfoMsg.isEmpty()) {

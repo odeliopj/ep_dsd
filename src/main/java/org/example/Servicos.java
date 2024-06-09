@@ -157,9 +157,21 @@ public final class Servicos {
     }
 
     public static void arquivosDeTeste(Rede rede) {
+        //Ciclo 3
         criarNo("127.0.0.1:5001 topologias/topologia_ciclo_3/1.txt topologias/topologia_ciclo_3/1-values.txt", rede);
         criarNo("127.0.0.1:5002 topologias/topologia_ciclo_3/2.txt topologias/topologia_ciclo_3/2-values.txt", rede);
         criarNo("127.0.0.1:5003 topologias/topologia_ciclo_3/3.txt topologias/topologia_ciclo_3/3-values.txt", rede);
+
+        //Grid 3x3
+//        criarNo("127.0.0.1:5001 topologias/topologia_grid3x3/1.txt topologias/topologia_grid3x3/1-values.txt", rede);
+//        criarNo("127.0.0.1:5002 topologias/topologia_grid3x3/2.txt topologias/topologia_grid3x3/2-values.txt", rede);
+//        criarNo("127.0.0.1:5003 topologias/topologia_grid3x3/3.txt topologias/topologia_grid3x3/3-values.txt", rede);
+//        criarNo("127.0.0.1:5004 topologias/topologia_grid3x3/4.txt topologias/topologia_grid3x3/4-values.txt", rede);
+//        criarNo("127.0.0.1:5005 topologias/topologia_grid3x3/5.txt topologias/topologia_grid3x3/5-values.txt", rede);
+//        criarNo("127.0.0.1:5006 topologias/topologia_grid3x3/6.txt topologias/topologia_grid3x3/6-values.txt", rede);
+//        criarNo("127.0.0.1:5007 topologias/topologia_grid3x3/7.txt topologias/topologia_grid3x3/7-values.txt", rede);
+//        criarNo("127.0.0.1:5008 topologias/topologia_grid3x3/8.txt topologias/topologia_grid3x3/8-values.txt", rede);
+//        criarNo("127.0.0.1:5009 topologias/topologia_grid3x3/9.txt topologias/topologia_grid3x3/9-values.txt", rede);
     }
 
     public static void exibirEstatisticas(Rede rede) {
