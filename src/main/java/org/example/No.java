@@ -20,9 +20,6 @@ public class No {
     private int numMsgsVistasFlooding;
     private int numMsgsVistasRandomWalk;
     private int numMsgsVistasBP;
-    private List<Integer> numHopsValFloodingList;
-    private List<Integer> numHopsValRandomWalkList;
-    private List<Integer> numHopsValBPList;
     private List<InfoMsgBP> infoMsgVistaListBP;
 
     public No(String endereco, int porta, Rede rede) {
@@ -36,9 +33,6 @@ public class No {
         this.numMsgsVistasFlooding = 0;
         this.numMsgsVistasRandomWalk = 0;
         this.numMsgsVistasBP = 0;
-        this.numHopsValFloodingList = new ArrayList<>();
-        this.numHopsValRandomWalkList = new ArrayList<>();
-        this.numHopsValBPList = new ArrayList<>();
         this.infoMsgVistaListBP = new ArrayList<>();
         try {
             this.serverSocketEscuta = new ServerSocket(porta, 50, InetAddress.getByName(endereco));
@@ -148,16 +142,15 @@ public class No {
 
     void adicionarNumSaltos(List<String> partesMensagem){
         String mode = partesMensagem.get(3);
-        int hopsCount = Integer.parseInt(partesMensagem.get(6));
 
         if (mode.equals("VAL_FL"))
-            numHopsValFloodingList.add(hopsCount);
+            rede.getNumHopsPorBuscaFloodingList().add(rede.getNumSaltosChaveEncontrada());
 
         if (mode.equals("VAL_RW"))
-            numHopsValRandomWalkList.add(hopsCount);
+            rede.getNumHopsPorBuscaRwList().add(rede.getNumSaltosChaveEncontrada());
 
         if (mode.equals("VAL_BP"))
-            numHopsValBPList.add(hopsCount);
+            rede.getNumHopsPorBuscaBpList().add(rede.getNumSaltosChaveEncontrada());
     }
 
 /***************************************************************************************************************************************************/
@@ -305,6 +298,8 @@ public class No {
 
         // verificar tabela local de chave-valor
         if (chaveValorMap.containsKey(chaveBuscada)) {
+            rede.setNumSaltosChaveEncontrada(Integer.parseInt(partesMsgFlooding.get(6)));
+
             partesMsgFlooding.set(0, endereco + ":" + porta);
             numeroSequenciaMsg++;
             partesMsgFlooding.set(1, String.valueOf(numeroSequenciaMsg));
@@ -408,6 +403,8 @@ public class No {
 
         // verificar tabela local de chave-valor
         if (chaveValorMap.containsKey(chaveBuscada)) {
+            rede.setNumSaltosChaveEncontrada(Integer.parseInt(partesMsgRandomWalk.get(6)));
+
             partesMsgRandomWalk.set(0, endereco + ":" + porta);
             numeroSequenciaMsg++;
             partesMsgRandomWalk.set(1, String.valueOf(numeroSequenciaMsg));
@@ -517,6 +514,8 @@ public class No {
         // verificar tabela local de chave-valor
         if (chaveValorMap.containsKey(chaveBuscada)) {
             System.out.println("Chave encontrada!");
+
+            rede.setNumSaltosChaveEncontrada(Integer.parseInt(partesMsgBuscaProfundidade.get(6)));
 
             List<String> partesMsgChaveEncontrada = new ArrayList<>();
             partesMsgChaveEncontrada.add(endereco + ":" + porta);

@@ -3,8 +3,6 @@ package org.example;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public final class Servicos {
@@ -177,57 +175,55 @@ public final class Servicos {
     public static void exibirEstatisticas(Rede rede) {
         int totalMsgsVistasFlooding = 0;
         int totalHopsFlooding = 0;
-        List<Integer> mediasPorNoFlooding = new ArrayList<>();
         int mediaSaltosFlooding = 0;
 
         int totalMsgsVistasRandomWalk = 0;
         int totalHopsRandomWalk = 0;
-        List<Integer> mediasPorNoRandomWalk = new ArrayList<>();
         int mediaSaltosRandomWalk = 0;
 
         int totalMsgsVistasBP = 0;
         int totalHopsBP = 0;
-        List<Integer> mediasPorNoBP = new ArrayList<>();
         int mediaSaltosBP = 0;
 
+        // soma o total de msgs vistas por CADA nó em uma ÚNICA BUSCA
         for (No no : rede.getNosDaRede().values()) {
             totalMsgsVistasFlooding += no.getNumMsgsVistasFlooding();
-            totalHopsFlooding = no.getNumHopsValFloodingList().stream().mapToInt(Integer::intValue).sum();
-            if (!no.getNumHopsValFloodingList().isEmpty()) {
-                mediasPorNoFlooding.add(totalHopsFlooding / no.getNumHopsValFloodingList().size());
-            }
 
             totalMsgsVistasRandomWalk += no.getNumMsgsVistasRandomWalk();
-            totalHopsRandomWalk = no.getNumHopsValRandomWalkList().stream().mapToInt(Integer::intValue).sum();
-            if (!no.getNumHopsValRandomWalkList().isEmpty()) {
-                mediasPorNoRandomWalk.add(totalHopsRandomWalk / no.getNumHopsValRandomWalkList().size());
-            }
 
             totalMsgsVistasBP += no.getNumMsgsVistasBP();
-            totalHopsBP = no.getNumHopsValBPList().stream().mapToInt(Integer::intValue).sum();
-            if (!no.getNumHopsValBPList().isEmpty()) {
-                mediasPorNoBP.add(totalHopsBP / no.getNumHopsValBPList().size());
-            }
         }
 
-        if(!mediasPorNoFlooding.isEmpty())
-            mediaSaltosFlooding = mediasPorNoFlooding.stream().mapToInt(Integer::intValue).sum() / mediasPorNoFlooding.size();
+        totalHopsFlooding = rede.getNumHopsPorBuscaFloodingList().stream().mapToInt(Integer::intValue).sum();
+        if (!rede.getNumHopsPorBuscaFloodingList().isEmpty())
+            mediaSaltosFlooding = totalHopsFlooding / rede.getNumHopsPorBuscaFloodingList().size();
 
-        if(!mediasPorNoRandomWalk.isEmpty())
-            mediaSaltosRandomWalk = mediasPorNoRandomWalk.stream().mapToInt(Integer::intValue).sum() / mediasPorNoRandomWalk.size();
+        totalHopsRandomWalk = rede.getNumHopsPorBuscaRwList().stream().mapToInt(Integer::intValue).sum();
+        if (!rede.getNumHopsPorBuscaRwList().isEmpty())
+            mediaSaltosRandomWalk = totalHopsRandomWalk / rede.getNumHopsPorBuscaRwList().size();
 
-        if(!mediasPorNoBP.isEmpty())
-            mediaSaltosBP = mediasPorNoBP.stream().mapToInt(Integer::intValue).sum() / mediasPorNoBP.size();
+        totalHopsBP = rede.getNumHopsPorBuscaBpList().stream().mapToInt(Integer::intValue).sum();
+        if (!rede.getNumHopsPorBuscaBpList().isEmpty())
+            mediaSaltosBP = totalHopsBP / rede.getNumHopsPorBuscaBpList().size();
 
         System.out.println("Estatisticas");
 
-        System.out.println("  Media de saltos ate encontrar destino por flooding: " + mediaSaltosFlooding);
-        System.out.println("  Total de mensagens de flooding vistas: " + totalMsgsVistasFlooding);
+        if (!rede.getNumHopsPorBuscaFloodingList().isEmpty()) {
+            System.out.println(" Total de mensagens de flooding vistas (nesta busca): " + totalMsgsVistasFlooding);
+            System.out.println(" Total de saltos ate encontrar chave por flooding (nesta busca): " + rede.getNumHopsPorBuscaFloodingList().get(0));
+            System.out.println(" Media de saltos ate encontrar destino por flooding: " + mediaSaltosFlooding);
+        }
 
-        System.out.println("\n  Media de saltos ate encontrar destino por random walk: " + mediaSaltosRandomWalk);
-        System.out.println("  Total de mensagens de random walk vistas: " + totalMsgsVistasRandomWalk);
+        if (!rede.getNumHopsPorBuscaRwList().isEmpty()) {
+            System.out.println(" Total de mensagens de random walk vistas (nesta busca): " + totalMsgsVistasRandomWalk);
+            System.out.println(" Total de saltos ate encontrar chave por RW (nesta busca): " + rede.getNumHopsPorBuscaRwList().get(0));
+            System.out.println(" Media de saltos ate encontrar destino por random walk: " + mediaSaltosRandomWalk);
+        }
 
-        System.out.println("\n  Media de saltos ate encontrar destino por BP: " + mediaSaltosBP);
-        System.out.println("  Total de mensagens de BP vistas: " + totalMsgsVistasBP);
+        if (!rede.getNumHopsPorBuscaBpList().isEmpty()) {
+            System.out.println(" Total de mensagens de BP vistas (nesta busca): " + totalMsgsVistasBP);
+            System.out.println(" Total de saltos ate encontrar chave por BP (nesta busca): " + rede.getNumHopsPorBuscaBpList().get(0));
+            System.out.println(" Media de saltos ate encontrar destino por BP: " + mediaSaltosBP);
+        }
     }
 }
